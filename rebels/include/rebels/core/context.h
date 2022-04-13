@@ -5,6 +5,9 @@
 #include "rebels/mod/sys_account/portfolio.h"
 #include "rebels/mod/sys_simulation/simulation_broker.h"
 #include "rebels/mod/sys_analyzer/analyzer.h"
+#include "rebels/core/strategy.h"
+#include "rebels/core/executor.h"
+
 #include <dexode/EventBus.hpp>
 #include <memory>
 
@@ -35,7 +38,9 @@ public:
     std::shared_ptr<Account> account_ptr;
     std::shared_ptr<Portfolio> portfolio_ptr;
     std::shared_ptr<SimulationBroker> broker_ptr;
+    std::shared_ptr<Strategy> strategy_ptr;
     std::shared_ptr<Analyzer> analyzer_ptr;
+    std::shared_ptr<Executor> executor_ptr;
 
 public:
     void update_trading_dt(int trading_dt);
@@ -44,8 +49,7 @@ public:
     void set_portfolio(std::shared_ptr<Portfolio> portfolio_ptr);
     void set_broker(std::shared_ptr<SimulationBroker> broker_ptr);
     void set_analyzer(std::shared_ptr<Analyzer> analyzer_ptr);
-    //Account account{0};
-    //void set_account(Account my_account){
-    //    account = my_account;
-    //}
+    void set_strategy(std::shared_ptr<Strategy> strategy_ptr);
+    void set_executor(std::shared_ptr<Executor> executor_ptr);
+
 };

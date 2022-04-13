@@ -6,6 +6,8 @@
 #include <rebels/mod/sys_simulation/matcher.h>
 #include <rebels/core/executor.h>
 #include <rebels/core/strategy.h>
+#include <rebels/core/context.h>
+
 #include <iostream>
 #include <string>
 #include <dexode/EventBus.hpp>
@@ -42,31 +44,39 @@ int main(){
     // create strategy
     //Strategy strategy{event_bus};
     std::shared_ptr<Strategy> strategy_ptr = std::make_shared<Strategy>(event_bus);
-    //context.set_strategy(strategy)
+    context.set_strategy(strategy_ptr);
 
     //create broker
     //SimulationBroker broker{event_bus};
     //broker.submit_order(std::move(first_order_ptr));
 
     std::shared_ptr<SimulationBroker> broker_ptr = std::make_shared<SimulationBroker>(event_bus);
-    //broker_ptr ->submit_order(std::move(first_order_ptr));
     context.set_broker(broker_ptr);
+    //std::cout << "broker_ptr ->submit_order" << std::endl;
+    //broker_ptr ->submit_order(std::move(first_order_ptr));
 
     //Context::Instance().broker_ptr ->submit_order(std::move(first_order_ptr));
     //std::shared_ptr<Analyzer> analyzer_ptr = std::make_shared<Analyzer>(event_bus);
     //context.set_analyzer(analyzer_ptr);
 
-    //Executor executor{event_bus};
-    //executor.send(order_vectors);
-    std::vector<Order> empty;
+    //std::cout << "strategy_ptr ->handle_bar" << std::endl;
+    //std::vector<Order> empty;
     //strategy_ptr ->handle_bar(BarEvent(EventType::BAR, empty));
-    event_bus->postpone(BarEvent(EventType::BAR, empty));
-    event_bus->process();
+
+    //{
+    //    std::cout << "event_bus->postpone(BarEvent" << std::endl;
+    //    event_bus->postpone(BarEvent(EventType::BAR, empty));
+    //    event_bus->process();
+    //}
+    //event_bus->process();
     //event_bus->postpone(OrderPendingNewEvent(EventType::ORDER_PENDING_NEW, first_order)); //pass-by-reference
     //event_bus->process();
 
     //event_bus->postpone(OrderCreationPassEvent(EventType::ORDER_CREATION_PASS, first_order)); //pass-by-reference
     //event_bus->process();
+
+    Executor executor{event_bus};
+    executor.send(order_vectors);
 
     //std::cout << "after update_last_price..." << std::endl;
     //std::cout << "current equity is " << account.equity() << std::endl;
@@ -76,6 +86,3 @@ int main(){
 
     return 0;
 }
-
-
-

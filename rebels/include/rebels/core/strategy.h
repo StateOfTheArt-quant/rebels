@@ -3,7 +3,6 @@
 #include <dexode/EventBus.hpp>
 #include <iostream>
 
-#include "rebels/core/context.h"
 #include "rebels/object/events.h"
 #include "rebels/object/order.h"
 
