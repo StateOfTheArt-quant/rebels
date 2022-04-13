@@ -20,7 +20,5 @@ target_link_libraries(understand_data_source rebels)
 add_executable(3_understand_book_with_order 3_understand_book_with_order.cpp)
 target_link_libraries(3_understand_book_with_order rebels)
 
-add_executable(4_understand_book_with_risk_manager 4_understand_book_with_risk_manager.cpp)
-target_link_libraries(4_understand_book_with_risk_manager rebels)
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/data/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/data/)
