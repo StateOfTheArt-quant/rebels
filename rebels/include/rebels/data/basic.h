@@ -1,3 +1,4 @@
+#pragma once
 #include "rebels/data/streamer.h"
 #include "rebels/utilities/csv.h"
 

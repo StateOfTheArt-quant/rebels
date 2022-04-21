@@ -1,3 +1,7 @@
+# Cache or third package
+third_party/
+.vscode/
+
 # Prerequisites
 *.d
 

@@ -2,7 +2,7 @@
 
 #include <string>
 #include <map>
-#include <memory> //for std:unique_ptr
+#include <memory>  //for std:unique_ptr
 #include <vector>
 #include "rebels/mod/sys_account/portfolio.h"
 #include "rebels/object/events.h"
@@ -12,16 +12,29 @@
 using EventBus = dexode::EventBus;
 using Listener = dexode::EventBus::Listener;
 
-
-class Analyzer{
-
+class Analyzer {
 private:
     Listener __listener;
+
+    double __rl_static_total_value;
+    double __rl_static_unit_net_value;
+
+    std::vector<double> __portfolio_current_bar_pnl;
+    std::vector<double> __portfolio_current_bar_returns;
+
+private:
     void __register_events(PostSystemInitEvent event);
-    void __collect_bars(PostSettlementEvent event);
+    void __collect_daily(PostSettlementEvent event);
+    void __collect_trade(TradeEvent event);
+    void __collect_order(OrderCreationPassEvent event);
 
 public:
-    std::vector<double> bar_returns;
-
     Analyzer(std::shared_ptr<EventBus> event_bus);
+    
+    /// property in python
+    
+    std::vector<Order> orders;
+    std::vector<double> bars_returns();
+    double rl_static_unit_net_value();
+    double rl_unit_net_value();
 };

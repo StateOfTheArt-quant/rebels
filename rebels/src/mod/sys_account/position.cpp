@@ -87,6 +87,9 @@ double Position::apply_trade(const Trade& trade){
         return trade.last_price() * trade.last_quantity() - trade.transaction_cost();
     } else {
         std::runtime_error("does not support this position_effect");
+        // empty return to get rid of:
+        // warning: control reaches end of non-void function [-Wreturn-type]
+        return 0.0;
     }
 }
 

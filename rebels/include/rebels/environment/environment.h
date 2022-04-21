@@ -10,7 +10,9 @@
 class TradingEnvironment {
 public:
     TradingEnvironment();
-    std::vector<std::vector<double>> reset();
-    std::tuple<std::vector<std::vector<double>>, double, bool> step(std::vector<Order>& action);
-
+    std::vector<std::tuple<double, double, double, double, double, double>> reset();
+    std::tuple<std::vector<std::tuple<double, double, double, double, double, double>>,
+               double,
+               bool>
+    step(std::vector<Order>& action);
 };

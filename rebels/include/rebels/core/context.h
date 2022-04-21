@@ -34,6 +34,7 @@ private:
 //---- for singleton
 public:
     int trading_dt{0};
+    std::string mode{"rl"};
     std::shared_ptr<DataSource> data_source_ptr;
     std::shared_ptr<Account> account_ptr;
     std::shared_ptr<Portfolio> portfolio_ptr;
@@ -51,5 +52,5 @@ public:
     void set_analyzer(std::shared_ptr<Analyzer> analyzer_ptr);
     void set_strategy(std::shared_ptr<Strategy> strategy_ptr);
     void set_executor(std::shared_ptr<Executor> executor_ptr);
-
+    void set_mode(std::string mode_str);
 };

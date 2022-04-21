@@ -1,31 +1,37 @@
+#pragma once
+
 #include "rebels/data/basic.h"
 #include <unordered_map>
 #include <map>
 #include <vector>
 
 class AbstractDataSource {
-
-    virtual std::vector<std::tuple<double, double, double, double, double, double>> history_bars(std::string instrument_id, int bar_count, int end_dt) = 0;
-
+    virtual std::vector<std::tuple<double, double, double, double, double, double>> history_bars(
+        std::string instrument_id, int bar_count, int end_dt)
+        = 0;
 };
 
-
-class DataSource : public AbstractDataSource{
-
+class DataSource : public AbstractDataSource {
 public:
-    std::string bar_path;
-    data::basic::Bar  bar_reader;
     int bar_count;
+    std::string bar_path;
+    // 包含 last current next
+    data::basic::Bar bar_reader;
+    std::map<std::string,
+             std::map<int, std::tuple<double, double, double, double, double, double>>>
+        toyDict;
 
+    std::map<int, std::tuple<double, double, double, double, double, double>> consumedData;
 
-    std::map<int, std::tuple<double, double, double, double, double,double>> consumedData;
-    std::vector<std::tuple<double, double, double, double, double, double>> history_bars(std::string instrument_id, int bar_count, int end_dt);
-
-public:
     DataSource();
     DataSource(std::string data_Path, int bar_count);
+
+public:
+    std::vector<std::tuple<double, double, double, double, double, double>> history_bars(
+        std::string instrument_id, int bar_count, int end_dt);
     std::vector<std::tuple<double, double, double, double, double, double>> step();
-    void reset();
+    std::vector<std::tuple<double, double, double, double, double, double>> reset();
 
-
+    double get_last_price(std::string instrument_id);
+    double get_next_price(std::string instrument_id);
 };

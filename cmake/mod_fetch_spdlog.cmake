@@ -7,7 +7,7 @@ function(download_spdlog)
         message(STATUS "${SPDLOG_DIR} is already exists, skip download googletest, auto building ...")
         add_subdirectory(${SPDLOG_DIR})
     else()
-        set(SPDLOG_URL "https://github.com.cnpmjs.org/gabime/spdlog.git")
+        set(SPDLOG_URL "https://github.com/gabime/spdlog.git")
         set(SPDLOG_VERSION "1.9.2")
         set(SPDLOG_TAG "v${SPDLOG_VERSION}")
 

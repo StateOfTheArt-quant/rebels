@@ -1,0 +1,25 @@
+---
+# See all possible options and defaults with:
+# clang-format --style=Google --dump-config
+BasedOnStyle: Google
+AccessModifierOffset: -4
+AlignConsecutiveAssignments: true
+AllowShortBlocksOnASingleLine: false
+AlwaysBreakTemplateDeclarations: Yes
+AllowAllParametersOfDeclarationOnNextLine: true
+BinPackArguments: false
+BinPackParameters: false
+BreakBeforeBinaryOperators: All
+BreakConstructorInitializers: BeforeColon
+ColumnLimit: 99
+IndentCaseLabels: true
+IndentPPDirectives: AfterHash
+IndentWidth: 4
+Language: Cpp
+PointerAlignment: Left
+SortIncludes: false
+SpaceAfterCStyleCast: true
+# SpaceInEmptyBlock: true # too new
+Standard: Cpp11
+TabWidth: 4
+...

@@ -13,15 +13,16 @@ using EventBus = dexode::EventBus;
 using Listener = dexode::EventBus::Listener;
 
 
-class Portfolio{
+class Portfolio {
 private:
     Listener __listener;
 
-    double __static_unit_net_value{1.0};
     double __units{0.0};
+    double __static_unit_net_value{1.0};
 
     std::map<std::string, std::shared_ptr<Account>> __account_container;
 
+private:
     void __pre_before_trading(PreBeforeTradingEvent event);
 
 public:
@@ -32,5 +33,10 @@ public:
     double total_value();
     double bar_returns();
     double total_returns();
+    double daily_returns();
+    double daily_pnl();
+    
 
+public:
+    double units();
 };
