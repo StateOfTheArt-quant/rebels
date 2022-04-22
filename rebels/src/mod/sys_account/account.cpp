@@ -1,5 +1,6 @@
 #include "rebels/mod/sys_account/account.h"
 #include "rebels/object/events.h"
+#include "rebels/core/context.h"
 #include <iostream>
 
 Account::Account(){
@@ -25,7 +26,7 @@ void Account::register_event() {
     __listener.listen<PreBeforeTradingEvent>(std::bind(&Account::__on_before_trading<PreBeforeTradingEvent>, this, std::placeholders::_1));
     __listener.listen<SettlementEvent>(std::bind(&Account::__on_settlement, this, std::placeholders::_1));
 
-    //__listener.listen<BarEvent>(std::bind(&Account::__update_last_price<BarEvent>, this, std::placeholders::_1));
+    __listener.listen<BarEvent>(std::bind(&Account::__update_last_price<BarEvent>, this, std::placeholders::_1));
 }
 
 void Account::__apply_trade(TradeEvent event) {
@@ -118,9 +119,17 @@ void Account::__on_settlement(SettlementEvent event) {
 template<typename T>
 void Account::__update_last_price(T event) {
     std::cout << "call Account::__update_last_price" << std::endl;
+    Context& ctx = Context::Instance();
 
     for(auto it = __positions.begin(); it != __positions.end(); it++){
-        double price = 11.11; // env.get_last_price(it->first)
+        // double price = 11.11; // env.get_last_price(it->first)
+        std::cout << "--------------------------------------------" << std::endl;
+        double price = ctx.data_source_ptr->get_last_price(it->first, ctx.trading_dt);
+        std::cout << "account update last price date: " << ctx.trading_dt << std::endl;
+        std::cout << "account update last price instrument: " << it->first << std::endl;
+        std::cout << "account update last price: " << price << std::endl;
+        std::cout << "--------------------------------------------" << std::endl;
+
         for(auto iit = it->second.begin(); iit != it->second.end(); iit++){
             iit -> second ->update_last_price(price);
         }

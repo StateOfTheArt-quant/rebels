@@ -1,87 +1,134 @@
-/* Single company. */
-
 #include "rebels/data/data_source.h"
 #include <iostream>
 #include <vector>
 #include <algorithm>
 
-DataSource::DataSource() {}
-
-/// 多个csv读取并加载
-DataSource::DataSource(std::string bar_path, int bar_counts)
-    : bar_reader(), bar_path(bar_path), bar_count(bar_counts) {  //, bar_count(bar_count)
-    bar_reader.LoadCSV(bar_path);
-    std::cout << "load csv successfully : " << bar_path << std::endl;
+/// Construct a new Data Source:: Data Source object
+///
+/// Parameters:
+///     path_map: path dict like {"000001.XSHE": "/home/user/1.csv", "000002.XSHE":
+///     "/home/user/2.csv"} bar_count: select init bar entries
+///
+/// Examples:
+///     std::map<std::string, std::string> path_map;
+///     path_map["000001.XSHE"] = "/home/user/1.csv";
+///     path_map["000002.XSHE"] = "/home/user/1.csv";
+///     auto ds = DataSource(path_map, 2);
+DataSource::DataSource(std::map<std::string, std::string> path_map, int bar_count)
+    : __bar_count(bar_count), path_dict(path_map) {
+    // mapping dict for instrument id and streamer ptr
+    for (auto& path_item : path_map) {
+        bar_reader[path_item.first] = std::make_shared<data::basic::Bar>(path_item.second);
+        std::cout << "load " << path_item.first << " from " << path_item.second << std::endl;
+    }
 }
 
-std::vector<std::tuple<double, double, double, double, double, double>> DataSource::history_bars(
-    std::string instrument_id, int bar_counts, int end_dt) {
-    std::vector<std::tuple<double, double, double, double, double, double>> v;
-    std::map<int, std::tuple<double, double, double, double, double, double>>::iterator it;
-    it = consumedData.find(end_dt);
+// simple version for back test
+std::map<int, DataSource::RECORD> DataSource::history_bars(std::string instrument_id,
+                                                           int bar_counts,
+                                                           int end_dt) {
+    // trading data
+    std::map<int, RECORD> single_instrument;
 
-    for (int i = 0; i < bar_counts; i++) {
-        v.push_back(it->second);
-        it--;
+    auto bar_it = consumed_data.find(instrument_id);
+
+    // TODO it might have critical error when row info is unknown
+    if (bar_it != consumed_data.end()) {
+        // search dt from cache
+        auto record_it = bar_it->second.find(end_dt);
+
+        if (record_it != bar_it->second.end()) {
+            for (int i = 0; i < bar_counts; i++) {
+                single_instrument[record_it->first] = (record_it->second);
+                record_it--;
+            }
+        }
     }
 
-    std::reverse(v.begin(), v.end());
-    return v;
+    return single_instrument;
 }
 
-std::vector<std::tuple<double, double, double, double, double, double>> DataSource::step() {
-    bar_reader.LoadNext();
-    data::BarRecord bar_rec    = bar_reader.Record();
-    consumedData[bar_rec.date] = bar_rec.bar;
-    int current_dt             = bar_rec.date;
-    std::cout << "current dt: " << current_dt << std::endl;
+DataSource::BAR DataSource::step() {
+    BAR bar;
+    int current_dt;
+    data::BarRecord bar_rec;
+    std::string instrument_id;
 
-    std::vector<std::tuple<double, double, double, double, double, double>> v;
-    v = history_bars("fb", bar_count, current_dt);
-    return v;
+    // next bar for all storage reader
+    for (auto& reader_item : bar_reader) {
+        // next bar
+        reader_item.second->LoadNext();
+
+        bar_rec                                  = reader_item.second->Record();
+        instrument_id                            = reader_item.first;
+        current_dt                               = bar_rec.date;
+        consumed_data[instrument_id][current_dt] = bar_rec.bar;
+
+        bar[instrument_id] = history_bars(instrument_id, __bar_count, current_dt);
+
+        std::cout << instrument_id << " current date is " << current_dt << std::endl;
+    }
+
+    return bar;
 }
 
-std::vector<std::tuple<double, double, double, double, double, double>> DataSource::reset() {
-    // reload csv file from beginning
-    bar_reader.LoadCSV(bar_path);
+DataSource::BAR DataSource::reset() {
+    for (auto& reader_item : bar_reader) {
+        reader_item.second->LoadCSV(path_dict.at(reader_item.first));
+    }
 
-    // clear dict and release memory
-    decltype(consumedData) empty;
-    consumedData.swap(empty);
+    // clear dict
+    decltype(consumed_data) empty;
+    consumed_data.swap(empty);
 
-    std::cout << "DataSource and consumedData reset" << std::endl;
+    std::cout << "DataSource and consumed_data reset" << std::endl;
 
     return step();
 }
 
-double DataSource::get_last_price(std::string instrument_id) {
+double DataSource::get_last_price(std::string instrument_id, int dt) {
+    auto it = bar_reader.find(instrument_id);
+
+    if (it == bar_reader.end()) {
+        return 0.0;
+    }
+
     // instrument_id is not used yet
-    data::BarRecord bar_last = bar_reader.record_last;
+    data::BarRecord bar_last = it->second->record_last;
+    int last_date            = bar_last.date;  // TODO remove
+
+    std::cout << "get last date is " << last_date << " input is " << dt << std::endl;
 
     // only if last date is not existed in raw data source
-    if (bar_last.date == 0) {
+    if (bar_last.date != dt) {
         return 0.0;
     }
 
     // debug
-    std::cout << "last date is " << bar_last.date << ", close price is "
-              << std::get<3>(bar_last.bar) << std::endl;
+    std::cout << "last date is " << last_date << ", close price is " << std::get<3>(bar_last.bar)
+              << std::endl;
 
     // last day close price
     return std::get<3>(bar_last.bar);
 }
 
-double DataSource::get_next_price(std::string instrument_id) {
+double DataSource::get_next_price(std::string instrument_id, int dt) {
+    auto it = bar_reader.find(instrument_id);
+
+    if (it == bar_reader.end()) {
+        return 0.0;
+    }
+
     // instrument_id is not used yet
-    data::BarRecord bar_next = bar_reader.record_next;
+    data::BarRecord bar_next = it->second->record_next;
 
     // only if last date is not existed in raw data source
-    if (bar_next.date == 0) {
+    if (bar_next.date != dt) {
         return 0.0;
     }
 
     // debug
-    std::cout << "last date is " << bar_next.date << ", close price is "
+    std::cout << "next date is " << bar_next.date << ", close price is "
               << std::get<3>(bar_next.bar) << std::endl;
 
     // last day close price

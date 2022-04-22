@@ -10,9 +10,6 @@
 class TradingEnvironment {
 public:
     TradingEnvironment();
-    std::vector<std::tuple<double, double, double, double, double, double>> reset();
-    std::tuple<std::vector<std::tuple<double, double, double, double, double, double>>,
-               double,
-               bool>
-    step(std::vector<Order>& action);
+    DataSource::BAR reset();
+    std::tuple<DataSource::BAR, double, bool> step(std::vector<Order>& action);
 };
