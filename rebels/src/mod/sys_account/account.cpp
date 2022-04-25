@@ -119,13 +119,17 @@ void Account::__on_settlement(SettlementEvent event) {
 template<typename T>
 void Account::__update_last_price(T event) {
     std::cout << "call Account::__update_last_price" << std::endl;
+    
+    // get context instance
     Context& ctx = Context::Instance();
+    // previous trading date
+    int pre_td = ctx.data_source_ptr->get_previous_trading_date(ctx.trading_dt);
 
     for(auto it = __positions.begin(); it != __positions.end(); it++){
-        // double price = 11.11; // env.get_last_price(it->first)
+        // double price = 11.11;
         std::cout << "--------------------------------------------" << std::endl;
-        double price = ctx.data_source_ptr->get_last_price(it->first, ctx.trading_dt);
-        std::cout << "account update last price date: " << ctx.trading_dt << std::endl;
+        double price = ctx.data_source_ptr->get_last_price(it->first, pre_td);
+        std::cout << "account update last price date: " << pre_td << std::endl;
         std::cout << "account update last price instrument: " << it->first << std::endl;
         std::cout << "account update last price: " << price << std::endl;
         std::cout << "--------------------------------------------" << std::endl;

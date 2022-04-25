@@ -34,17 +34,15 @@ TradingEnvironment::TradingEnvironment() {
     }
 }
 
-std::vector<std::tuple<double, double, double, double, double, double>>
-TradingEnvironment::reset() {
+DataSource::BAR_MULTI TradingEnvironment::reset() {
     // reload csv stream to the beginning
     return Context::Instance().data_source_ptr->reset();
 }
 
-std::tuple<std::vector<std::tuple<double, double, double, double, double, double>>, double, bool>
-TradingEnvironment::step(std::vector<Order>& action) {
-    std::vector<std::tuple<double, double, double, double, double, double>> next_state
-        = Context::Instance().data_source_ptr->step();
-    double step_reward = Context::Instance().executor_ptr->send(action);
+std::tuple<DataSource::BAR_MULTI, double, bool> TradingEnvironment::step(
+    std::vector<Order>& action) {
+    DataSource::BAR_MULTI next_state = Context::Instance().data_source_ptr->step();
+    double step_reward               = Context::Instance().executor_ptr->send(action);
 
     return {next_state, step_reward, false};
 }

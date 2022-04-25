@@ -13,10 +13,11 @@ class AbstractDataSource {
 public:
     // short declare of bar data type
     using RECORD  = std::tuple<double, double, double, double, double, double>;
-    using BAR = std::map<std::string, std::map<int, RECORD>>;
+    using BAR = std::map<int, RECORD>;
+    using BAR_MULTI = std::map<std::string, BAR>;
 
-    virtual std::map<int, RECORD> history_bars(std::string instrument_id, int bar_count, int end_dt) = 0;
-    // virtual BAR multi_history_bars(std::vector<std::string> instrument_ids,
+    virtual BAR history_bars(std::string instrument_id, int bar_count, int end_dt) = 0;
+    // virtual BAR_MULTI multi_history_bars(std::vector<std::string> instrument_ids,
     //                                        int bar_count,
     //                                        int end_dt)
     //     = 0;
@@ -43,14 +44,14 @@ public:
     ///                  20000102: BAR2,
     ///                  20000103: BAR3}
     /// }
-    BAR consumed_data;
+    BAR_MULTI consumed_data;
 
     DataSource() = default;
     DataSource(std::map<std::string, std::string> path_map, int bar_count);
 
 public:
-    std::map<int, RECORD> history_bars(std::string instrument_id, int bar_count, int end_dt);
-    // BAR multi_history_bars(std::vector<std::string> instrument_ids,
+    BAR history_bars(std::string instrument_id, int bar_count, int end_dt);
+    // BAR_MULTI multi_history_bars(std::vector<std::string> instrument_ids,
     //                                        int bar_count,
     //                                        int end_dt);
 
@@ -59,10 +60,12 @@ public:
     // get next date close price
     double get_next_price(std::string instrument_id, int dt);
 
-    // previous date range
+    // given trading date backward for N steps
     int get_previous_trading_date(int end_dt, int bar_count = 1);
+    // given trading date forward for N steps
+    int get_next_trading_date(int end_dt, int bar_count = 1);
 
     // back test only
-    BAR step();
-    BAR reset();
+    BAR_MULTI step();
+    BAR_MULTI reset();
 };

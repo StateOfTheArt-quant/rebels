@@ -24,11 +24,9 @@ DataSource::DataSource(std::map<std::string, std::string> path_map, int bar_coun
 }
 
 // simple version for back test
-std::map<int, DataSource::RECORD> DataSource::history_bars(std::string instrument_id,
-                                                           int bar_counts,
-                                                           int end_dt) {
+DataSource::BAR DataSource::history_bars(std::string instrument_id, int bar_counts, int end_dt) {
     // trading data
-    std::map<int, RECORD> single_instrument;
+    BAR single_instrument;
 
     auto bar_it = consumed_data.find(instrument_id);
 
@@ -48,8 +46,8 @@ std::map<int, DataSource::RECORD> DataSource::history_bars(std::string instrumen
     return single_instrument;
 }
 
-DataSource::BAR DataSource::step() {
-    BAR bar;
+DataSource::BAR_MULTI DataSource::step() {
+    BAR_MULTI bar;
     int current_dt;
     data::BarRecord bar_rec;
     std::string instrument_id;
@@ -72,7 +70,7 @@ DataSource::BAR DataSource::step() {
     return bar;
 }
 
-DataSource::BAR DataSource::reset() {
+DataSource::BAR_MULTI DataSource::reset() {
     for (auto& reader_item : bar_reader) {
         reader_item.second->LoadCSV(path_dict.at(reader_item.first));
     }
@@ -133,4 +131,38 @@ double DataSource::get_next_price(std::string instrument_id, int dt) {
 
     // last day close price
     return std::get<3>(bar_next.bar);
+}
+
+int DataSource::get_previous_trading_date(int end_dt, int bar_count) {
+    // get prevoius trading date via trading calendar
+    // std::vector<int> calendar;
+    // auto iter = std::find(calendar.begin(), calendar.end(), end_dt);
+    // if (iter == calendar.end()) {
+    //     return 0;
+    // }
+    // // get index
+    // int idx = iter - calendar.begin();
+    // // back ward
+    // idx -= bar_count;
+    // // if idx out of bound 0 as default
+    // return calendar[idx];
+
+    return 20200604;
+}
+
+int DataSource::get_next_trading_date(int end_dt, int bar_count) {
+    // get next trading date via trading calendar
+    // std::vector<int> calendar;
+    // auto iter = std::find(calendar.begin(), calendar.end(), end_dt);
+    // if (iter == calendar.end()) {
+    //     return 0;
+    // }
+    // // get index
+    // int idx = iter - calendar.begin();
+    // // back ward
+    // idx -= bar_count;
+    // // if idx out of bound 0 as default
+    // return calendar[idx];
+
+    return 20200604;
 }
