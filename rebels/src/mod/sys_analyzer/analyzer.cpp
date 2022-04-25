@@ -1,6 +1,7 @@
 #include "rebels/mod/sys_analyzer/analyzer.h"
 #include "rebels/core/context.h"
 #include "rebels/mod/sys_account/portfolio.h"
+#include <iostream>
 
 Analyzer::Analyzer(std::shared_ptr<EventBus> event_bus)
     : __listener{event_bus}, __rl_static_unit_net_value{1.0} {
@@ -40,11 +41,12 @@ void Analyzer::__collect_daily(PostSettlementEvent event) {
         // step 3: update current values
         // __rl_static_unit_net_value = portfolio.unit_net_value();
         // __rl_static_total_value    = portfolio.total_value();
-
+        std::cout << "rl mode in any" << std::endl;
     } else {
         // daily statistic
         __portfolio_current_bar_returns.push_back(portfolio.daily_returns());
         __portfolio_current_bar_pnl.push_back(portfolio.daily_pnl());
+        std::cout << "none rl mode in any" << std::endl;
     }
 
     // step 3(optional): record info(complete in future release)

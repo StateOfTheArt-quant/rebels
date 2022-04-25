@@ -26,7 +26,7 @@ DataSource::DataSource(std::map<std::string, std::string> path_map, int bar_coun
 // simple version for back test
 DataSource::BAR DataSource::history_bars(std::string instrument_id, int bar_counts, int end_dt) {
     // trading data
-    BAR single_instrument;
+    BAR bar;
 
     auto bar_it = consumed_data.find(instrument_id);
 
@@ -35,15 +35,29 @@ DataSource::BAR DataSource::history_bars(std::string instrument_id, int bar_coun
         // search dt from cache
         auto record_it = bar_it->second.find(end_dt);
 
-        if (record_it != bar_it->second.end()) {
-            for (int i = 0; i < bar_counts; i++) {
-                single_instrument[record_it->first] = (record_it->second);
-                record_it--;
+        for (int i = 0; i < bar_counts; i++) {
+            // if reach begin stop iteration
+            if (record_it == bar_it->second.end()) {
+                break;
             }
+            bar[record_it->first] = (record_it->second);
+            record_it--;
         }
     }
 
-    return single_instrument;
+    return bar;
+}
+
+DataSource::BAR_MULTI DataSource::multi_history_bars(std::vector<std::string> instrument_ids,
+                                         int bar_count,
+                                         int end_dt) {
+    BAR_MULTI bars;
+
+    for (std::string& instrument_id : instrument_ids) {
+        bars[instrument_id] = history_bars(instrument_id, bar_count, end_dt);
+    }
+
+    return bars;
 }
 
 DataSource::BAR_MULTI DataSource::step() {

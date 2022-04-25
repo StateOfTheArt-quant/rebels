@@ -33,5 +33,11 @@ double Executor::send(std::vector<Order>& action) {
     __event_bus->postpone(SettlementEvent(EventType::SETTLEMENT));
     __event_bus->process();
 
-    return 0.0;
+    std::vector<double> bar_returns = Context::Instance().analyzer_ptr->bars_returns();
+    if (bar_returns.empty()) {
+        std::cout << "bar returns is empty..." << std::endl;
+        return 0.0;
+    } else {
+        return bar_returns.back();
+    }
 }

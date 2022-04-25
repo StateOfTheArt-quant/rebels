@@ -7,13 +7,29 @@
 #include <unordered_map>
 
 /// Base class of all different data sources,it contains 2 basic apis.
+///
+/// API intro:
 /// history_bars       -- single instrument data if existed
 /// multi_history_bars -- multi instruments data if existed
+///
+/// Data structure intro:
+/// BAR :
+/// {20000102: DATA1,
+///  20000103: DATA2,
+///  20000104: DATA3}
+///
+/// BAR_MULTI :
+/// {"000001.XSHE": {20000102: DATA1,
+///                  20000103: DATA2,
+///                  20000104: DATA3},
+///  "000002.XSHE": {20000101: DATA1,
+///                  20000102: DATA2,
+///                  20000103: DATA3}}
 class AbstractDataSource {
 public:
     // short declare of bar data type
-    using RECORD  = std::tuple<double, double, double, double, double, double>;
-    using BAR = std::map<int, RECORD>;
+    using RECORD    = std::tuple<double, double, double, double, double, double>;
+    using BAR       = std::map<int, RECORD>;
     using BAR_MULTI = std::map<std::string, BAR>;
 
     virtual BAR history_bars(std::string instrument_id, int bar_count, int end_dt) = 0;
@@ -35,15 +51,7 @@ public:
     /// }
     std::map<std::string, std::shared_ptr<data::basic::Bar>> bar_reader;
     std::map<std::string, std::string> path_dict;
-    /// consumed_data structure:
-    /// {
-    ///  "000001.XSHE": {20000102: BAR1,
-    ///                  20000103: BAR2,
-    ///                  20000104: BAR3},
-    ///  "000002.XSHE": {20000101: BAR1,
-    ///                  20000102: BAR2,
-    ///                  20000103: BAR3}
-    /// }
+
     BAR_MULTI consumed_data;
 
     DataSource() = default;
@@ -51,9 +59,9 @@ public:
 
 public:
     BAR history_bars(std::string instrument_id, int bar_count, int end_dt);
-    // BAR_MULTI multi_history_bars(std::vector<std::string> instrument_ids,
-    //                                        int bar_count,
-    //                                        int end_dt);
+    BAR_MULTI multi_history_bars(std::vector<std::string> instrument_ids,
+                                 int bar_count,
+                                 int end_dt);
 
     // get last date close price
     double get_last_price(std::string instrument_id, int dt);
