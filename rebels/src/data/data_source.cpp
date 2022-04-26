@@ -109,7 +109,7 @@ double DataSource::get_last_price(std::string instrument_id, int dt) {
     data::BarRecord bar_last = it->second->record_last;
     int last_date            = bar_last.date;  // TODO remove
 
-    std::cout << "get last date is " << last_date << " input is " << dt << std::endl;
+    // std::cout << "get last date is " << last_date << " input is " << dt << std::endl;
 
     // only if last date is not existed in raw data source
     if (bar_last.date != dt) {

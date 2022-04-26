@@ -33,10 +33,10 @@ public:
     using BAR_MULTI = std::map<std::string, BAR>;
 
     virtual BAR history_bars(std::string instrument_id, int bar_count, int end_dt) = 0;
-    // virtual BAR_MULTI multi_history_bars(std::vector<std::string> instrument_ids,
-    //                                        int bar_count,
-    //                                        int end_dt)
-    //     = 0;
+    virtual BAR_MULTI multi_history_bars(std::vector<std::string> instrument_ids,
+                                         int bar_count,
+                                         int end_dt)
+        = 0;
 };
 
 class DataSource : public AbstractDataSource {

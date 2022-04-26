@@ -16,7 +16,8 @@ enum class EventType{
     ORDER_CANCEL_REJECT,
     ORDER_UNSOLICITED_UPDATE, // order_status_change
     TRADE,
-    SETTLEMENT
+    SETTLEMENT,
+    PostSettlement
 };
 
 class Event{
