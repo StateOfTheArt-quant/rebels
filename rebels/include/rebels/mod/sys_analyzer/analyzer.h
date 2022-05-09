@@ -7,10 +7,7 @@
 #include "rebels/mod/sys_account/portfolio.h"
 #include "rebels/object/events.h"
 #include "rebels/const.h"
-
-#include <dexode/EventBus.hpp>
-using EventBus = dexode::EventBus;
-using Listener = dexode::EventBus::Listener;
+#include "rebels/eventbus.h"
 
 class Analyzer {
 private:
@@ -30,9 +27,9 @@ private:
 
 public:
     Analyzer(std::shared_ptr<EventBus> event_bus);
-    
+
     /// property in python
-    
+
     std::vector<Order> orders;
     std::vector<double> bars_returns();
     double rl_static_unit_net_value();

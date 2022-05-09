@@ -1,10 +1,10 @@
 
 function(download_eventbus)
-    set(EVENTBUS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/eventbus)
+    set(EVENTBUS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/EventBus)
 
     #if eventbus exists, then skip download step
     if(EXISTS ${EVENTBUS_DIR})
-        message(STATUS "${EVENTBUS_DIR} is already exists, skip download eventbus, auto building ...")
+        message(STATUS "${EVENTBUS_DIR} is already exists, skip download EventBus, auto building ...")
         add_subdirectory(${EVENTBUS_DIR}/lib)
     else()
         set(EVENTBUS_URL "https://github.com/gelldur/EventBus.git")

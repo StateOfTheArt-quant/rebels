@@ -7,15 +7,12 @@
 #include "rebels/mod/sys_analyzer/analyzer.h"
 #include "rebels/core/strategy.h"
 #include "rebels/core/executor.h"
+#include "rebels/eventbus.h"
 
-#include <dexode/EventBus.hpp>
 #include <memory>
 
-using EventBus = dexode::EventBus;
-using Listener = dexode::EventBus::Listener;
-
 //Context is a singleton
-class Context{
+class Context {
 public:
     static Context& Instance(){
         static std::unique_ptr<Context> instance_ptr(new Context()); //static local variable only exec once

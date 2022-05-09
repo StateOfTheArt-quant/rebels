@@ -1,12 +1,9 @@
 #pragma once
 
 #include "rebels/object/order.h"
-#include <dexode/EventBus.hpp>
+#include "rebels/eventbus.h"
 
-using EventBus = dexode::EventBus;
-using Listener = dexode::EventBus::Listener;
-
-class DefaultMatcher{
+class DefaultMatcher {
 public:
     std::shared_ptr<EventBus> __event_bus;
 

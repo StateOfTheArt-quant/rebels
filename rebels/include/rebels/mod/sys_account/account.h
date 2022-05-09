@@ -7,11 +7,7 @@
 #include "rebels/mod/sys_account/position.h"
 #include "rebels/object/events.h"
 #include "rebels/const.h"
-
-#include <dexode/EventBus.hpp>
-using EventBus = dexode::EventBus;
-using Listener = dexode::EventBus::Listener;
-
+#include "rebels/eventbus.h"
 
 class Account {
 

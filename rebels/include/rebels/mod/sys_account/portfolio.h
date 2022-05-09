@@ -2,16 +2,12 @@
 
 #include <string>
 #include <map>
-#include <memory> //for std:unique_ptr
+#include <memory>  //for std:unique_ptr
 #include <vector>
 #include "rebels/mod/sys_account/account.h"
 #include "rebels/object/events.h"
 #include "rebels/const.h"
-
-#include <dexode/EventBus.hpp>
-using EventBus = dexode::EventBus;
-using Listener = dexode::EventBus::Listener;
-
+#include "rebels/eventbus.h"
 
 class Portfolio {
 private:
@@ -27,7 +23,8 @@ private:
 
 public:
     Portfolio();
-    Portfolio(std::map<std::string, double> starting_cash, std::shared_ptr<EventBus> event_bus); //std::map<std::string, int> starting_cash,
+    Portfolio(std::map<std::string, double> starting_cash,
+              std::shared_ptr<EventBus> event_bus);  // std::map<std::string, int> starting_cash,
 
     double unit_net_value();
     double total_value();
@@ -35,7 +32,6 @@ public:
     double total_returns();
     double daily_returns();
     double daily_pnl();
-    
 
 public:
     double units();

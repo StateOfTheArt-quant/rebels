@@ -4,18 +4,14 @@
 #include <memory>
 #include "rebels/object/events.h"
 #include "rebels/mod/sys_simulation/matcher.h"
+#include "rebels/eventbus.h"
 
-#include <dexode/EventBus.hpp>
-using EventBus = dexode::EventBus;
-using Listener = dexode::EventBus::Listener;
-
-class SimulationBroker{
-
+class SimulationBroker {
 private:
     Listener __listener;
     std::shared_ptr<EventBus> __event_bus;
 
-    DefaultMatcher __matcher; //
+    DefaultMatcher __matcher;  //
 
 private:
     bool __match_immediately{true};
@@ -26,7 +22,6 @@ private:
     void __on_bar(BarEvent event);
     void __pre_settlement(PreSettlementEvent event);
 
-    //
     void __match();
 
 public:
@@ -34,7 +29,5 @@ public:
     SimulationBroker(std::shared_ptr<EventBus> event_bus);
     void register_event();
     void submit_order(std::unique_ptr<Order> order_ptr);
-    //void cancel_order(std::unique_ptr<Order> order_ptr);
-
-
+    // void cancel_order(std::unique_ptr<Order> order_ptr);
 };

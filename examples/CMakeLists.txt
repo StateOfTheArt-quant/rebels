@@ -1,6 +1,6 @@
 project(subbinary)
 
-add_subdirectory(1_understand_data_source)
+add_subdirectory(understand_data_source)
 add_subdirectory(understand_utilities)
 add_subdirectory(understand_environment)
 add_subdirectory(understand_event_driven_pattern)
