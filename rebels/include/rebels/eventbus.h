@@ -1,5 +1,5 @@
 /**
- * @file EventBus.h
+ * @file eventbus.h
  * @brief thrid party-event bus provide subscribe and post message
  *
  * @copyright Copyright (c) 2022
