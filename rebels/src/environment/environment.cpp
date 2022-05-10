@@ -1,36 +1,51 @@
 #include "rebels/environment/environment.h"
 
-TradingEnvironment::TradingEnvironment() {
+TradingEnvironment::TradingEnvironment(std::shared_ptr<DataSource> datasource,
+                                       int32_t look_backward_window,
+                                       std::map<std::string, double> starting_cash,
+                                       std::string mode,
+                                       int32_t commission_multiplier,
+                                       int32_t min_commission,
+                                       int32_t tax_multiplier)
+    : __look_backward_window(look_backward_window),
+      __mode(std::move(mode)),
+      __starting_cash(std::move(starting_cash)),
+      __commission_multiplier(commission_multiplier),
+      __min_commission(min_commission),
+      __tax_multiplier(tax_multiplier) {
     // create context
     Context& context                    = Context::Instance();
     std::shared_ptr<EventBus> event_bus = std::make_shared<EventBus>();
 
+    // partial eventbus
     {
-        // create portfolio
-        std::map<std::string, double> account_start_cash;
-        account_start_cash.emplace("stock", 10000.00);
-        std::shared_ptr<Portfolio> portfolio_ptr
-            = std::make_shared<Portfolio>(account_start_cash, event_bus);
-        context.set_portfolio(portfolio_ptr);
+        // mode
+        context.set_mode(__mode);
 
-        // create strategy
-        // Strategy strategy{event_bus};
-        std::shared_ptr<Strategy> strategy_ptr = std::make_shared<Strategy>(event_bus);
-        context.set_strategy(strategy_ptr);
+        // datasource
+        context.set_data_source(std::move(datasource));
 
-        // create broker
-        // SimulationBroker broker{event_bus};
-        // broker.submit_order(std::move(first_order_ptr));
-
-        std::shared_ptr<SimulationBroker> broker_ptr
-            = std::make_shared<SimulationBroker>(event_bus);
+        // broker
+        auto broker_ptr = std::make_shared<SimulationBroker>(event_bus);
         context.set_broker(broker_ptr);
 
-        std::shared_ptr<Analyzer> analyzer_ptr = std::make_shared<Analyzer>(event_bus);
+        // portfolio
+        auto portfolio_ptr = std::make_shared<Portfolio>(__starting_cash, event_bus);
+        context.set_portfolio(portfolio_ptr);
+
+        // strategy
+        auto strategy_ptr = std::make_shared<Strategy>(event_bus);
+        context.set_strategy(strategy_ptr);
+
+        // executor
+        auto executor_ptr = std::make_shared<Executor>(event_bus);
+        context.set_executor(executor_ptr);
+
+        // analyzer
+        auto analyzer_ptr = std::make_shared<Analyzer>(event_bus);
         context.set_analyzer(analyzer_ptr);
 
-        std::shared_ptr<Executor> executor_ptr = std::make_shared<Executor>(event_bus);
-        context.set_executor(executor_ptr);
+
     }
 }
 

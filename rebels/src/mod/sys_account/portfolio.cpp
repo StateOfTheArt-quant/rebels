@@ -8,8 +8,9 @@ Portfolio::Portfolio() {}
 Portfolio::Portfolio(std::map<std::string, double> starting_cash,
                      std::shared_ptr<EventBus> event_bus)
     : __listener{event_bus} {
+
     for (auto it = starting_cash.begin(); it != starting_cash.end(); it++) {
-        std::cout << it->first << " " << it->second << std::endl;
+        std::cout << "[Portfolio]: init crash triggered, " << it->first << " " << it->second << std::endl;
         std::shared_ptr<Account> account_ptr
             = std::make_shared<Account>(it->first, it->second, event_bus);
         std::cout << "create " << it->first
@@ -17,14 +18,16 @@ Portfolio::Portfolio(std::map<std::string, double> starting_cash,
         __account_container.emplace(it->first, account_ptr);
         __units += it->second;
     }
+
     __listener.listen<PreBeforeTradingEvent>(
         std::bind(&Portfolio::__pre_before_trading, this, std::placeholders::_1));
 
-    std::cout << "portfolio total value: " << this->total_value() << std::endl;
+    // std::cout << "portfolio total value: " << this->total_value() << std::endl;
 }
 
 void Portfolio::__pre_before_trading(PreBeforeTradingEvent event) {
     __static_unit_net_value = unit_net_value();
+    std::cout << "[-Portfolio-]: __pre_before_trading called, __static_unit_net_value value is " << __static_unit_net_value << std::endl;
 }
 
 double Portfolio::total_value() {
@@ -32,6 +35,9 @@ double Portfolio::total_value() {
     for (auto it = __account_container.begin(); it != __account_container.end(); it++) {
         total_values += it->second->total_value();
     }
+    
+    std::cout << "[-Portfolio-]: total value tirgger, values is " << total_values << std::endl;
+
     return total_values;
 }
 
@@ -46,6 +52,7 @@ double Portfolio::daily_returns() {
         // NAN is declared in math.h header
         return NAN;
     } else {
+        std::cout << "[-Portfolio-]: daily return value is " << (__static_unit_net_value - 1.0)<< std::endl;
         return __static_unit_net_value - 1.0;
     }
 }

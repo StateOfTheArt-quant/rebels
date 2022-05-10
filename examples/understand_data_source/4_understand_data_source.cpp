@@ -79,10 +79,10 @@ void get_price() {
         data_source.step();
     }
     // step 4: last and next close price
-    double last_price = data_source.get_last_price("000001.XSHE", /*dt=*/20200610);
+    double pre_price = data_source.get_previous_price("000001.XSHE", /*dt=*/20200610);
     double next_price = data_source.get_next_price("000001.XSHE", /*dt=*/20200612);
     // step 5: print to terminal
-    std::cout << "20200611 last date close price is " << last_price << std::endl;
+    std::cout << "20200611 prevoius date close price is " << pre_price << std::endl;
     std::cout << "20200611 next date close price is " << next_price << std::endl;
 }
 
@@ -98,10 +98,10 @@ void get_trading_date() {
         data_source.step();
     }
     // step 4: last and next trading date
-    int last_td = data_source.get_previous_trading_date(20200610, /*bar_count=*/1);
+    int pre_td = data_source.get_previous_trading_date(20200610, /*bar_count=*/1);
     int next_td = data_source.get_next_trading_date(20200610, /*bar_count=*/1);
     // step 5: print to terminal
-    std::cout << "20200610 last trading date is " << last_td << std::endl;
+    std::cout << "20200610 previous trading date is " << pre_td << std::endl;
     std::cout << "20200610 next trading date is " << next_td << std::endl;
 }
 // clang-format on

@@ -49,8 +49,8 @@ DataSource::BAR DataSource::history_bars(std::string instrument_id, int bar_coun
 }
 
 DataSource::BAR_MULTI DataSource::multi_history_bars(std::vector<std::string> instrument_ids,
-                                         int bar_count,
-                                         int end_dt) {
+                                                     int bar_count,
+                                                     int end_dt) {
     BAR_MULTI bars;
 
     for (std::string& instrument_id : instrument_ids) {
@@ -98,7 +98,7 @@ DataSource::BAR_MULTI DataSource::reset() {
     return step();
 }
 
-double DataSource::get_last_price(std::string instrument_id, int dt) {
+double DataSource::get_previous_price(std::string instrument_id, int dt) {
     auto it = bar_reader.find(instrument_id);
 
     if (it == bar_reader.end()) {
@@ -107,9 +107,6 @@ double DataSource::get_last_price(std::string instrument_id, int dt) {
 
     // instrument_id is not used yet
     data::BarRecord bar_last = it->second->record_last;
-    int last_date            = bar_last.date;  // TODO remove
-
-    // std::cout << "get last date is " << last_date << " input is " << dt << std::endl;
 
     // only if last date is not existed in raw data source
     if (bar_last.date != dt) {
@@ -117,11 +114,35 @@ double DataSource::get_last_price(std::string instrument_id, int dt) {
     }
 
     // debug
+    int last_date = bar_last.date;  // TODO remove
     std::cout << "last date is " << last_date << ", close price is " << std::get<3>(bar_last.bar)
               << std::endl;
 
     // last day close price
     return std::get<3>(bar_last.bar);
+}
+
+double DataSource::get_current_price(std::string instrument_id, int dt) {
+    auto it = bar_reader.find(instrument_id);
+
+    if (it == bar_reader.end()) {
+        return 0.0;
+    }
+
+    // instrument_id is not used yet
+    data::BarRecord bar_curr = it->second->record_curr;
+
+    // debug
+    int last_date = bar_curr.date;  // TODO remove
+    std::cout << "[DataSouce]: get_current_price current date is " << last_date << std::endl;
+
+    // only if last date is not existed in raw data source
+    if (bar_curr.date != dt) {
+        return 0.0;
+    }
+
+    // last day close price
+    return std::get<3>(bar_curr.bar);
 }
 
 double DataSource::get_next_price(std::string instrument_id, int dt) {

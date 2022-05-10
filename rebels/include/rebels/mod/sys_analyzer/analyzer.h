@@ -21,7 +21,7 @@ private:
 
 private:
     void __register_events(PostSystemInitEvent event);
-    void __collect_daily(PostSettlementEvent event);
+    // void __collect_daily(PostSettlementEvent event);
     void __collect_trade(TradeEvent event);
     void __collect_order(OrderCreationPassEvent event);
 
@@ -29,6 +29,7 @@ public:
     Analyzer(std::shared_ptr<EventBus> event_bus);
 
     /// property in python
+    void __collect_daily(PostSettlementEvent event);
 
     std::vector<Order> orders;
     std::vector<double> bars_returns();

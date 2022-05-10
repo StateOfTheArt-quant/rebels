@@ -1,5 +1,5 @@
 # Using cmake filesystem to glob all cmake modules
-FILE(GLOB EXTENSIONS "${CMAKE_CURRENT_LIST_DIR}/Mod*.cmake")
+FILE(GLOB EXTENSIONS "${CMAKE_CURRENT_LIST_DIR}/mod_*.cmake")
 
 # Automatically load or skip extension modules
 if(DEFINED EXTENSIONS)

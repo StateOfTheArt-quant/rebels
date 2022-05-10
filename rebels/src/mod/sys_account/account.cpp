@@ -118,25 +118,22 @@ void Account::__on_settlement(SettlementEvent event) {
 
 template<typename T>
 void Account::__update_last_price(T event) {
-    std::cout << "call Account::__update_last_price" << std::endl;
+    std::cout << "[Account]: call Account::__update_last_price..." << std::endl;
     
     // get context instance
     Context& ctx = Context::Instance();
-    // previous trading date
-    int pre_trading_date = ctx.data_source_ptr->get_previous_trading_date(ctx.trading_dt);
 
-    for(auto it = __positions.begin(); it != __positions.end(); it++){
-        // double price = 11.11;
-        double price = ctx.data_source_ptr->get_last_price(it->first, pre_trading_date);
+    for (auto it = __positions.begin(); it != __positions.end(); it++) {
+        double price = ctx.data_source_ptr->get_current_price(it->first, ctx.trading_dt);
 
         std::cout << "--------------------------------------------" << std::endl;
-        std::cout << "account update last price date: " << pre_trading_date << std::endl;
-        std::cout << "account update last price instrument: " << it->first << std::endl;
-        std::cout << "account update last price: " << price << std::endl;
+        std::cout << "account update latest price date: " << ctx.trading_dt << std::endl;
+        std::cout << "account update latest price instrument: " << it->first << std::endl;
+        std::cout << "account update latest price: " << price << std::endl;
         std::cout << "--------------------------------------------" << std::endl;
 
-        for(auto iit = it->second.begin(); iit != it->second.end(); iit++){
-            iit -> second ->update_last_price(price);
+        for (auto iit = it->second.begin(); iit != it->second.end(); iit++) {
+            iit->second->update_last_price(price);
         }
     }
 }
@@ -188,11 +185,10 @@ std::vector<Position*> Account::iter_pos(){
 
 double Account::__frozen_cash_of_order(Order& order) {
     double cost = 0.0;
-    if(order.position_effect() == PositionEffect::OPEN){
-        std::cout << "order quantity " <<order.quantity() << std::endl;
-        std::cout << "order frozen_price " << order.frozen_price() << std::endl;
+    if (order.position_effect() == PositionEffect::OPEN) {
         cost = double(order.quantity()) * order.frozen_price();
-        std::cout << "frozen cash " << cost << std::endl;
+        std::cout << "[Account]: order quantity " << order.quantity() << ",order frozen_price "
+                  << order.frozen_price() << ", frozen cash " << cost << std::endl;
     }
     return cost;
 }

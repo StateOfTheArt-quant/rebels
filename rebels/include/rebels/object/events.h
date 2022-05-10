@@ -17,6 +17,7 @@ enum class EventType{
     ORDER_UNSOLICITED_UPDATE, // order_status_change
     TRADE,
     SETTLEMENT,
+    PREBEFORETRADING,
     POSTSETTLEMENT
 };
 
@@ -25,11 +26,13 @@ public:
     EventType event_type;
     Event(EventType event_type);
 };
+
 // --------------------
 class PostSystemInitEvent : public Event {
 public:
     PostSystemInitEvent(EventType event_type);
 };
+
 //----------------
 class PreBeforeTradingEvent : public Event {
 public:

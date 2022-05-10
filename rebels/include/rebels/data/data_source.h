@@ -63,8 +63,10 @@ public:
                                  int bar_count,
                                  int end_dt);
 
-    // get last date close price
-    double get_last_price(std::string instrument_id, int dt);
+    // get previous date close price
+    double get_previous_price(std::string instrument_id, int dt);
+    // get current date close price
+    double get_current_price(std::string instrument_id, int dt);
     // get next date close price
     double get_next_price(std::string instrument_id, int dt);
 
