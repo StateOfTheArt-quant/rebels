@@ -27,7 +27,8 @@ Portfolio::Portfolio(std::map<std::string, double> starting_cash,
 
 void Portfolio::__pre_before_trading(PreBeforeTradingEvent event) {
     __static_unit_net_value = unit_net_value();
-    std::cout << "[-Portfolio-]: __pre_before_trading called, __static_unit_net_value value is " << __static_unit_net_value << std::endl;
+    std::cout << "[Portfolio]: __pre_before_trading called, __static_unit_net_value value is "
+              << __static_unit_net_value << ",__units is " << __units << std::endl;
 }
 
 double Portfolio::total_value() {
@@ -36,7 +37,7 @@ double Portfolio::total_value() {
         total_values += it->second->total_value();
     }
     
-    std::cout << "[-Portfolio-]: total value tirgger, values is " << total_values << std::endl;
+    std::cout << "[Portfolio]: total value tirgger, values is " << total_values << std::endl;
 
     return total_values;
 }

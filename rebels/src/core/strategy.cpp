@@ -5,7 +5,8 @@
 #include "rebels/core/context.h"
 
 Strategy::Strategy(std::shared_ptr<EventBus> event_bus) : __listener{event_bus} {
-    //__listener.listen<BarEvent>(std::bind(&Strategy::handle_bar, this, std::placeholders::_1));
+    /// conflit to Portfolio
+    // __listener.listen<BarEvent>(std::bind(&Strategy::handle_bar, this, std::placeholders::_1));
 }
 
 void Strategy::handle_bar(BarEvent event) {
