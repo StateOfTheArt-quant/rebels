@@ -37,15 +37,13 @@ TradingEnvironment::TradingEnvironment(std::shared_ptr<DataSource> datasource,
         auto strategy_ptr = std::make_shared<Strategy>(event_bus);
         context.set_strategy(strategy_ptr);
 
-        // executor
-        auto executor_ptr = std::make_shared<Executor>(event_bus);
-        context.set_executor(executor_ptr);
-
         // analyzer
         auto analyzer_ptr = std::make_shared<Analyzer>(event_bus);
         context.set_analyzer(analyzer_ptr);
 
-
+        // executor
+        auto executor_ptr = std::make_shared<Executor>(event_bus);
+        context.set_executor(executor_ptr);
     }
 }
 

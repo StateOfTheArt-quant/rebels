@@ -4,7 +4,11 @@
 #include "rebels/core/executor.h"
 #include "rebels/object/events.h"
 
-Executor::Executor(std::shared_ptr<EventBus> event_bus) : __event_bus(event_bus) {}
+Executor::Executor(std::shared_ptr<EventBus> event_bus) : __event_bus(event_bus) {
+    std::cout << "[Executor]: Init publish PostSystemInitEvent ..." << std::endl;
+    __event_bus->postpone(PostSystemInitEvent(EventType::POST_SYSTEM_INIT));
+    __event_bus->process();
+}
 
 double Executor::send(std::vector<Order>& action) {
 
@@ -38,10 +42,8 @@ double Executor::send(std::vector<Order>& action) {
 
     /// TODO test
     std::cout << "[Executor]: publish PostSettlementEvent ..." << std::endl;
-    // __event_bus->postpone(PostSettlementEvent(EventType::POSTSETTLEMENT));
-    // __event_bus->process();
-    Context::Instance().analyzer_ptr->__collect_daily(
-        PostSettlementEvent(EventType::POSTSETTLEMENT));
+    __event_bus->postpone(PostSettlementEvent(EventType::POSTSETTLEMENT));
+    __event_bus->process();
 
     std::vector<double> bar_returns = Context::Instance().analyzer_ptr->bars_returns();
 
