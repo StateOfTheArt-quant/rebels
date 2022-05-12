@@ -35,3 +35,4 @@ download_eventbus()
 # ---------------------------------
 add_subdirectory(rebels)
 add_subdirectory(examples)
+add_subdirectory(test)

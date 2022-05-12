@@ -52,10 +52,13 @@ DataSource::BAR_MULTI TradingEnvironment::reset() {
     return Context::Instance().data_source_ptr->reset();
 }
 
-std::tuple<DataSource::BAR_MULTI, double, bool> TradingEnvironment::step(
+std::tuple<DataSource::BAR_MULTI, double, bool, std::map<std::string, double>> TradingEnvironment::step(
     std::vector<Order>& action) {
-    DataSource::BAR_MULTI next_state = Context::Instance().data_source_ptr->step();
-    double step_reward               = Context::Instance().executor_ptr->send(action);
+    double reward;
+    std::map<std::string, double> info;
 
-    return {next_state, step_reward, false};
+    DataSource::BAR_MULTI next_state = Context::Instance().data_source_ptr->step();
+    std::tie(reward, info) = Context::Instance().executor_ptr->send(action);
+
+    return {next_state, reward, false, info};
 }

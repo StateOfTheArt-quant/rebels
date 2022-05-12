@@ -28,11 +28,10 @@ private:
 public:
     Analyzer(std::shared_ptr<EventBus> event_bus);
 
-    /// property in python
-    // void __collect_daily(PostSettlementEvent event);
-
     std::vector<Order> orders;
-    std::vector<double> bars_returns();
+    std::vector<double> bar_returns();
+    std::vector<double> bar_pnl();
+
     double rl_static_unit_net_value();
     double rl_unit_net_value();
 };

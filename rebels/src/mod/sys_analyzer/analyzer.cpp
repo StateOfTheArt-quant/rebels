@@ -32,15 +32,6 @@ void Analyzer::__collect_daily(PostSettlementEvent event) {
         /*
          * TODO achieve later
          */
-        // portfolio.positions
-        // price
-        // next bar total value
-        // double pnl, reward;
-        // __portfolio_current_bar_returns.push_back(reward);
-        // __portfolio_current_bar_pnl.push_back(pnl);
-        // step 3: update current values
-        // __rl_static_unit_net_value = portfolio.unit_net_value();
-        // __rl_static_total_value    = portfolio.total_value();
         std::cout << "rl mode in any" << std::endl;
     } else {
         // daily statistic
@@ -76,7 +67,11 @@ double Analyzer::rl_unit_net_value() {
 }
 
 // clang-format off
-std::vector<double> Analyzer::bars_returns() {
+std::vector<double> Analyzer::bar_returns() {
     return __portfolio_current_bar_returns;
+}
+
+std::vector<double> Analyzer::bar_pnl() {
+    return __portfolio_current_bar_pnl;
 }
 // clang-format on

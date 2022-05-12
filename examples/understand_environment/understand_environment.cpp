@@ -32,8 +32,7 @@ void buy_and_hold() {
     Order first_act
         = Order("000001", 100, Side::BUY, PositionEffect::OPEN, OrderType::LIMIT, 225.0);
     // 订单配置
-    std::vector<Order> action;
-    action.push_back(first_act);
+    std::vector<Order> action{first_act};
 
     cout << "---------------------------------split line------------------------------" << endl;
     // 第一个交易日

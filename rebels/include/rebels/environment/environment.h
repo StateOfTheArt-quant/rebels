@@ -29,5 +29,6 @@ public:
                        int32_t tax_multiplier                      = 1);
 
     DataSource::BAR_MULTI reset();
-    std::tuple<DataSource::BAR_MULTI, double, bool> step(std::vector<Order>& action);
+    std::tuple<DataSource::BAR_MULTI, double, bool, std::map<std::string, double>> step(
+        std::vector<Order>& action);
 };

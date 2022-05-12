@@ -12,5 +12,6 @@ private:
 
 public:
     Executor(std::shared_ptr<EventBus> event_bus);
-    double send(std::vector<Order>& action);
+    // consider using struct
+    std::tuple<double, std::map<std::string, double>> send(std::vector<Order>& action);
 };
