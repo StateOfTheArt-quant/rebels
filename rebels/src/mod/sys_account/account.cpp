@@ -26,7 +26,7 @@ void Account::register_event() {
     __listener.listen<PreBeforeTradingEvent>(std::bind(&Account::__on_before_trading<PreBeforeTradingEvent>, this, std::placeholders::_1));
     __listener.listen<SettlementEvent>(std::bind(&Account::__on_settlement, this, std::placeholders::_1));
 
-    __listener.listen<BarEvent>(std::bind(&Account::__update_last_price<BarEvent>, this, std::placeholders::_1));
+    __listener.listen<PreBarEvent>(std::bind(&Account::__update_last_price<PreBarEvent>, this, std::placeholders::_1));
 }
 
 void Account::__apply_trade(TradeEvent event) {
@@ -225,10 +225,11 @@ double Account::equity() {
         double position_equity = (*it) -> equity();
         total_equity += position_equity;
     }
+
     return total_equity;
 }
 
-double Account::total_value(){
+double Account::total_value() {
     return __total_cash + equity();
 }
 //------------------

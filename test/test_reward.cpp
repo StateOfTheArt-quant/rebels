@@ -34,19 +34,21 @@ void single_target_reward() {
 
     // 添加时间，ctx默认的td为0？
     Context& ctx   = Context::Instance();
-    ctx.trading_dt = 20200605;
+    ctx.trading_dt = 20200604;
 
     // 第一个订单交易日，模拟买入非自动化操作
-    Order first_act
-        = Order("000001", 100, Side::BUY, PositionEffect::OPEN, OrderType::LIMIT, 225.0);
+    Order first_act = Order(
+        "000001", 100, Side::BUY, PositionEffect::OPEN, OrderType::LIMIT, /*price= */ 226.29);
+    // = Order("000001", 100, Side::BUY, PositionEffect::OPEN, OrderType::LIMIT, /*price= */225.0);
     std::vector<Order> action{first_act};
 
     cout << "---------------------------------day 1------------------------------" << endl;
     // process
-    env.step(action);
+    auto fret = env.step(action);
+    std::cout<< ctx.trading_dt << " Account total reward is " << std::get<1>(fret) << std::endl;
 
     // 第二个订单的交易日
-    ctx.trading_dt = 20200608;
+    ctx.trading_dt = 20200605;
     // 不做任何操作，买入并持有
     action.clear();
 
@@ -57,7 +59,13 @@ void single_target_reward() {
     auto reward     = std::get<1>(ret);
     auto done       = std::get<2>(ret);
 
-    cout << "Account total reward is " << reward << " ,is finished " << boolalpha << done << endl;
+    cout << ctx.trading_dt << " Account total reward is " << reward << " ,is finished "
+         << boolalpha << done << endl;
+
+    cout << "---------------------------------day 3------------------------------" << endl;
+    ctx.trading_dt = 20200608;
+    auto tret        = env.step(action);
+    std::cout<< ctx.trading_dt << " Account total reward is " << std::get<1>(tret) << std::endl;
 }
 
 /**

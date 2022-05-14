@@ -6,6 +6,7 @@
 enum class EventType{
     POST_SYSTEM_INIT,
     BEFORE_TRADING,
+    PREBAR,
     BAR,
     AFTER_TRADING,
     ORDER_PENDING_NEW,

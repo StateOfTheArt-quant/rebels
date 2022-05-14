@@ -11,6 +11,7 @@ Executor::Executor(std::shared_ptr<EventBus> event_bus) : __event_bus(event_bus)
 }
 
 std::tuple<double, std::map<std::string, double>> Executor::send(std::vector<Order>& action) {
+
     std::cout << "[Executor]: publish PreBeforeTradingEvent ..." << std::endl;
     __event_bus->postpone(PreBeforeTradingEvent(EventType::PREBEFORETRADING));
     __event_bus->process();
@@ -19,9 +20,13 @@ std::tuple<double, std::map<std::string, double>> Executor::send(std::vector<Ord
     __event_bus->postpone(BeforeTradingEvent(EventType::BEFORE_TRADING));
     __event_bus->process();
 
+    std::cout << "[Executor]: publish PreBarEvent ..." << std::endl;
+    __event_bus->postpone(PreBarEvent(EventType::PREBAR));
+    __event_bus->process();
+
     // error: when event_bus->postpone in event_bus->postpone(when nested event_bus->postpone)
-    std::cout << "[Executor]: publish BarEvent ..." << std::endl;
-    std::cout << "[Executor]: action size " << action.size() << ", is empty " << std::boolalpha
+    std::cout << "[Executor]: publish BarEvent ..." << std::endl
+              << "[Executor]: action size " << action.size() << ", is empty " << std::boolalpha
               << action.empty() << std::endl;
     /// Note: Strategy and Portfolio receieve BarEvent at same time,we must ensure Strategy execute
     /// first, consider using queue?

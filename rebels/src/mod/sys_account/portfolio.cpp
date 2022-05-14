@@ -21,14 +21,26 @@ Portfolio::Portfolio(std::map<std::string, double> starting_cash,
 
     __listener.listen<PreBeforeTradingEvent>(
         std::bind(&Portfolio::__pre_before_trading, this, std::placeholders::_1));
+    __listener.listen<PostSettlementEvent>(
+        std::bind(&Portfolio::__post_settlement, this, std::placeholders::_1));
 
-    // std::cout << "portfolio total value: " << this->total_value() << std::endl;
+    // std::cout << "[Portfolio]: init portfolio total value: " << this->total_value() << std::endl;
 }
 
 void Portfolio::__pre_before_trading(PreBeforeTradingEvent event) {
-    __static_unit_net_value = unit_net_value();
+    double unit_net_value_ = unit_net_value();
+    
+    if (unit_net_value_ != INFINITY) {
+        __static_unit_net_value = unit_net_value_;
+    } else {
+        __static_unit_net_value = _last_unit_net_value;
+    }
     std::cout << "[Portfolio]: __pre_before_trading called, __static_unit_net_value value is "
-              << __static_unit_net_value << ",__units is " << __units << std::endl;
+              << __static_unit_net_value << ", __units is " << __units << std::endl;
+}
+
+void Portfolio::__post_settlement(PostSettlementEvent event) {
+    _last_unit_net_value = unit_net_value();
 }
 
 double Portfolio::total_value() {
@@ -36,25 +48,42 @@ double Portfolio::total_value() {
     for (auto it = __account_container.begin(); it != __account_container.end(); it++) {
         total_values += it->second->total_value();
     }
-    
-    std::cout << "[Portfolio]: total value tirgger, values is " << total_values << std::endl;
+    /// debug message
+    // std::cout << "+++++++++++++++++++++" << std::endl;
+    // std::cout << "[Portfolio]: total_value is " << total_values << std::endl;
+    // std::cout << "+++++++++++++++++++++" << std::endl;
 
     return total_values;
 }
 
-double Portfolio::unit_net_value() { return total_value() / __units; }
+double Portfolio::unit_net_value() {
+    return total_value() / __units;
+}
 
-double Portfolio::bar_returns() { return unit_net_value() / __static_unit_net_value - 1.0; }
+double Portfolio::bar_returns() {
+    std::cout << "----------------------*bar returns triggered." << std::endl;
+    return unit_net_value() / __static_unit_net_value - 1.0;
+}
 
-double Portfolio::total_returns() { return unit_net_value() - 1.0; }
+double Portfolio::total_returns() {
+    std::cout << "----------------------*total_returns triggered." << std::endl;
+
+    return unit_net_value() - 1.0;
+}
 
 double Portfolio::daily_returns() {
     if (__static_unit_net_value == 0) {
         // NAN is declared in math.h header
         return NAN;
     } else {
-        std::cout << "[-Portfolio-]: daily return value is " << (__static_unit_net_value - 1.0)<< std::endl;
-        return __static_unit_net_value - 1.0;
+        // double unv = unit_net_value();
+        // std::cout << "[Portfolio--]: unit net value is " << unv << std::endl;
+        // double t = unv / __static_unit_net_value;
+        // std::cout << "[Portfolio--]: unit net value div is " << t << std::endl;
+        // std::cout << "[Portfolio--]: unit net value div mod is " << (t - 1.0) << std::endl;
+
+        // return (unv / __static_unit_net_value) - 1.0;
+        return unit_net_value() / __static_unit_net_value - 1.0;
     }
 }
 

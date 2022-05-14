@@ -34,5 +34,5 @@ download_eventbus()
 # custom library
 # ---------------------------------
 add_subdirectory(rebels)
-add_subdirectory(examples)
+# add_subdirectory(examples)
 add_subdirectory(test)

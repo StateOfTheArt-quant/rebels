@@ -1,4 +1,5 @@
 #include "rebels/mod/sys_account/position.h"
+#include "rebels/core/context.h"
 #include <algorithm>
 #include <stdexcept>
 #include <iostream>
@@ -24,7 +25,8 @@ std::int64_t Position::quantity(){
 
 double Position::market_value(){
     if (this -> quantity() != 0){
-        return __last_price * quantity();
+        return last_price() * quantity();
+        // return __last_price * quantity();
     } else {
         return 0;
     }
@@ -32,7 +34,8 @@ double Position::market_value(){
 
 double Position::equity(){
     if (this -> quantity() != 0){
-        return __last_price * quantity();
+        return last_price() * quantity();
+        // return __last_price * quantity();
     } else {
         return 0;
     }
@@ -131,6 +134,12 @@ double Position::prev_close(){
     return __prev_close;
 }
 double Position::last_price(){
+    if (__last_price == INFINITY) {
+        // TODO get last price from datasource
+        __last_price = Context::Instance().data_source_ptr->get_current_price("000001");
+        // __last_price = 226.29;
+    }
+
     return __last_price;
 }
 

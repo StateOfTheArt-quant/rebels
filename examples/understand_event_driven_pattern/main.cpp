@@ -20,7 +20,7 @@ int main(){
     Order first_order{};
     action.push_back(first_order);
 
-    double reward = executor.send(action);
+    // double reward = executor.send(action);
     //event_bus->postpone(BarEvent(EventType::BAR));
     //event_bus->process();
 

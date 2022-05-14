@@ -95,7 +95,17 @@ DataSource::BAR_MULTI DataSource::reset() {
 
     std::cout << "DataSource and consumed_data reset" << std::endl;
 
-    return step();
+    // get first date then clear
+    auto first_data = step();
+
+    for (auto& reader_item : bar_reader) {
+        reader_item.second->LoadCSV(path_dict.at(reader_item.first));
+    }
+
+    // clear dict
+    // consumed_data.swap(empty);
+
+    return first_data;
 }
 
 double DataSource::get_previous_price(std::string instrument_id, int dt) {
