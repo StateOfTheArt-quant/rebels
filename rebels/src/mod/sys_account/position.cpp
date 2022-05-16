@@ -135,8 +135,9 @@ double Position::prev_close(){
 }
 double Position::last_price(){
     if (__last_price == INFINITY) {
-        // TODO get last price from datasource
-        __last_price = Context::Instance().data_source_ptr->get_current_price("000001");
+        // get last price from datasource
+        Context& context = Context::Instance();
+        __last_price = context.data_source_ptr->get_current_price("000001", context.trading_dt);
         // __last_price = 226.29;
     }
 

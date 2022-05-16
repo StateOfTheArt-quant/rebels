@@ -76,14 +76,14 @@ double Portfolio::daily_returns() {
         // NAN is declared in math.h header
         return NAN;
     } else {
-        // double unv = unit_net_value();
-        // std::cout << "[Portfolio--]: unit net value is " << unv << std::endl;
-        // double t = unv / __static_unit_net_value;
-        // std::cout << "[Portfolio--]: unit net value div is " << t << std::endl;
-        // std::cout << "[Portfolio--]: unit net value div mod is " << (t - 1.0) << std::endl;
+        double ret = unit_net_value() / __static_unit_net_value - 1.0;
 
-        // return (unv / __static_unit_net_value) - 1.0;
-        return unit_net_value() / __static_unit_net_value - 1.0;
+        // double precision might return digital smaller than 1e-8
+        if (ret < 1e-8) {
+            return 0.0;
+        }
+
+        return ret;
     }
 }
 

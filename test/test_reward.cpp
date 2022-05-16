@@ -17,10 +17,9 @@ using namespace std;
 
 /**
  * 单账户资金  :    30000元
- * 第一个交易日:    买入000001标的100股，每股单价225元，收盘价为230.77元
+ * 第一个交易日:    买入000001标的100股，每股单价226.29元，收盘价为230.77元
  * 第二个交易日:    不进行任何交易，收盘价为231.4元
- * 账户结算情况:    剩余资金->7500元  账户价值->23140元
- * 账户总收益率:    (23140 + 7500) / 30000 - 1 = 0.0213
+ * 期望收益率  :    [0, 0.149333, 0.002069]
  */
 void single_target_reward() {
     std::string bar_path = "data/FB.csv";
@@ -32,49 +31,40 @@ void single_target_reward() {
     auto env   = TradingEnvironment(/*datasource=*/ds_ptr, 1, {{"User001", 30000.0}});
     auto state = env.reset();
 
-    // 添加时间，ctx默认的td为0？
-    Context& ctx   = Context::Instance();
-    ctx.trading_dt = 20200604;
+    // 获取上下文信息
+    Context& ctx = Context::Instance();
 
-    // 第一个订单交易日，模拟买入非自动化操作
+    // 模拟买入
     Order first_act = Order(
         "000001", 100, Side::BUY, PositionEffect::OPEN, OrderType::LIMIT, /*price= */ 226.29);
-    // = Order("000001", 100, Side::BUY, PositionEffect::OPEN, OrderType::LIMIT, /*price= */225.0);
     std::vector<Order> action{first_act};
 
     cout << "---------------------------------day 1------------------------------" << endl;
-    // process
-    auto fret = env.step(action);
-    std::cout<< ctx.trading_dt << " Account total reward is " << std::get<1>(fret) << std::endl;
+    // 第一个订单交易日
+    ctx.trading_dt = 20200604;
+    auto fret      = env.step(action);
+    std::cout << ctx.trading_dt << " Account total reward is " << std::get<1>(fret) << std::endl;
 
+    cout << "---------------------------------day 2------------------------------" << endl;
     // 第二个订单的交易日
     ctx.trading_dt = 20200605;
     // 不做任何操作，买入并持有
     action.clear();
-
-    cout << "---------------------------------day 2------------------------------" << endl;
-
-    auto ret        = env.step(action);
-    auto next_state = std::get<0>(ret);
-    auto reward     = std::get<1>(ret);
-    auto done       = std::get<2>(ret);
-
-    cout << ctx.trading_dt << " Account total reward is " << reward << " ,is finished "
-         << boolalpha << done << endl;
+    auto sret = env.step(action);
+    cout << ctx.trading_dt << " Account total reward is " << std::get<1>(sret) << endl;
 
     cout << "---------------------------------day 3------------------------------" << endl;
     ctx.trading_dt = 20200608;
-    auto tret        = env.step(action);
-    std::cout<< ctx.trading_dt << " Account total reward is " << std::get<1>(tret) << std::endl;
+    auto tret      = env.step(action);
+    std::cout << ctx.trading_dt << " Account total reward is " << std::get<1>(tret) << std::endl;
 }
 
 /**
  * 单账户资金  :    60000元
- * 第一个交易日:    买入000001标的100股，每股单价225元，收盘价为230.77元
- *                  买入000002标的100股，每股单价228元，收盘价为230.77元
+ * 第一个交易日:    买入000001标的100股，每股单价226.29元，收盘价为230.77元
+ *                  买入000002标的100股，每股单价226.29元，收盘价为230.77元
  * 第二个交易日:    不进行任何交易，2支标的收盘价均为231.4元
- * 账户结算情况:    剩余资金->14700元  账户价值->46280元
- * 账户总收益率:    (46280 + 14700) / 60000 - 1 = 0.0163
+ * 期望收益率  :    [0, 0.149333, 0.002069]
  */
 void multi_targets_reward() {
     std::string bar_path = "data/FB.csv";
@@ -87,41 +77,42 @@ void multi_targets_reward() {
     auto env   = TradingEnvironment(/*datasource=*/ds_ptr, 1, {{"User001", 60000.0}});
     auto state = env.reset();
 
-    // 添加时间，ctx默认的td为0？
-    Context& ctx   = Context::Instance();
-    ctx.trading_dt = 20200605;
+    // 获取上下文信息
+    Context& ctx = Context::Instance();
 
-    // 第一个订单交易日，模拟买入非自动化操作
+    // 模拟买入
     Order first_act
-        = Order("000001", 100, Side::BUY, PositionEffect::OPEN, OrderType::LIMIT, 225.0);
+        = Order("000001", 100, Side::BUY, PositionEffect::OPEN, OrderType::LIMIT, 226.29);
     Order second_act
-        = Order("000002", 100, Side::BUY, PositionEffect::OPEN, OrderType::LIMIT, 228.0);
+        = Order("000002", 100, Side::BUY, PositionEffect::OPEN, OrderType::LIMIT, 226.29);
     std::vector<Order> action{first_act, second_act};
 
     cout << "---------------------------------day 1------------------------------" << endl;
-    // process
-    env.step(action);
-
-    // 第二个订单的交易日
-    ctx.trading_dt = 20200608;
-    // 不做任何操作，买入并持有
-    action.clear();
+    // 第一个订单交易日
+    ctx.trading_dt = 20200604;
+    auto fret      = env.step(action);
+    std::cout << ctx.trading_dt << " Account total reward is " << std::get<1>(fret) << std::endl;
 
     cout << "---------------------------------day 2------------------------------" << endl;
+    // 第二个订单的交易日
+    ctx.trading_dt = 20200605;
+    // 不做任何操作，买入并持有
+    action.clear();
+    auto sret = env.step(action);
+    std::cout << ctx.trading_dt << " Account total reward is " << std::get<1>(sret) << std::endl;
 
-    auto ret        = env.step(action);
-    auto next_state = std::get<0>(ret);
-    auto reward     = std::get<1>(ret);
-    auto done       = std::get<2>(ret);
-
-    cout << "Account total reward is " << reward << " ,is finished " << boolalpha << done << endl;
+    cout << "---------------------------------day 3------------------------------" << endl;
+    ctx.trading_dt = 20200608;
+    auto tret      = env.step(action);
+    std::cout << ctx.trading_dt << " Account total reward is " << std::get<1>(tret) << std::endl;
 }
 
 int main(int argc, char* argv[]) {
     // finish your code
+    std::cout << "*********************************single********************************" << std::endl;
     single_target_reward();
-    std::cout << "*****************************************************************" << std::endl;
-    // multi_targets_reward();
+    std::cout << "*********************************multi********************************" << std::endl;
+    multi_targets_reward();
 
     return 0;
 }
