@@ -29,15 +29,24 @@ void Analyzer::__collect_daily(PostSettlementEvent event) {
 
     // step 2: mode select
     if (Context::Instance().mode == "rl") {
-        /*
-         * TODO achieve later
-         */
-        std::cout << "rl mode in any" << std::endl;
+        // calculate
+        double rl_unv = rl_unit_net_value();
+        double total_value = portfolio.total_value();
+        double reward = rl_unv / __rl_static_unit_net_value;
+        double pnl = total_value - __rl_static_total_value;
+        // put it in history reward vector
+        __portfolio_current_bar_returns.push_back(reward);
+        __portfolio_current_bar_pnl.push_back(pnl);
+        // important to update value
+        __rl_static_unit_net_value = rl_unv;
+        __rl_static_total_value = total_value;
+
+        std::cout << "[Analyzer]: rl mode in __collect_daily" << std::endl;
     } else {
         // daily statistic
         __portfolio_current_bar_returns.push_back(portfolio.daily_returns());
         __portfolio_current_bar_pnl.push_back(portfolio.daily_pnl());
-        std::cout << "none rl mode in any" << std::endl;
+        std::cout << "[Analyzer]: none rl mode in __collect_daily" << std::endl;
     }
 
     // step 3(optional): record info(complete in future release)

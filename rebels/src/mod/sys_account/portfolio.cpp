@@ -48,10 +48,6 @@ double Portfolio::total_value() {
     for (auto it = __account_container.begin(); it != __account_container.end(); it++) {
         total_values += it->second->total_value();
     }
-    /// debug message
-    // std::cout << "+++++++++++++++++++++" << std::endl;
-    // std::cout << "[Portfolio]: total_value is " << total_values << std::endl;
-    // std::cout << "+++++++++++++++++++++" << std::endl;
 
     return total_values;
 }

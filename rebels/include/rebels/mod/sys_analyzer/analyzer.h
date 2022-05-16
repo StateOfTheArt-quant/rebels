@@ -14,7 +14,7 @@ private:
     Listener __listener;
 
     double __rl_static_total_value;
-    double __rl_static_unit_net_value;
+    double __rl_static_unit_net_value{1.0};
 
     std::vector<double> __portfolio_current_bar_pnl;
     std::vector<double> __portfolio_current_bar_returns;
