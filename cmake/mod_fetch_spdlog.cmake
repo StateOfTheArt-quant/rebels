@@ -4,7 +4,7 @@ function(download_spdlog)
 
     #if spdlog exists, then skip download step
     if(EXISTS ${SPDLOG_DIR})
-        message(STATUS "${SPDLOG_DIR} is already exists, skip download googletest, auto building ...")
+        message(STATUS "${SPDLOG_DIR} is already exists, skip download spdlog, auto building ...")
         add_subdirectory(${SPDLOG_DIR})
     else()
         set(SPDLOG_URL "https://github.com/gabime/spdlog.git")

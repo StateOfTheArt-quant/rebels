@@ -28,8 +28,11 @@ else()
     message(FATAL_ERROR "load cmake module failed,build process interrupted.")
 endif()
 
+# download third package
 download_spdlog()
 download_eventbus()
+download_fmt()
+
 # --------------------------------
 # custom library
 # ---------------------------------

@@ -28,15 +28,12 @@
 class AbstractDataSource {
 public:
     // short declare of bar data type
-    using RECORD    = std::tuple<double, double, double, double, double, double>;
-    using BAR       = std::map<int, RECORD>;
-    using BAR_MULTI = std::map<std::string, BAR>;
-
-    virtual BAR history_bars(std::string instrument_id, int bar_count, int end_dt) = 0;
-    virtual BAR_MULTI multi_history_bars(std::vector<std::string> instrument_ids,
-                                         int bar_count,
-                                         int end_dt)
+    virtual std::map<int, std::tuple<double, double, double, double, double, double>> history_bars(
+        std::string instrument_id, int bar_count, int end_dt)
         = 0;
+    virtual std::map<std::string,
+                     std::map<int, std::tuple<double, double, double, double, double, double>>>
+    multi_history_bars(std::vector<std::string> instrument_ids, int bar_count, int end_dt) = 0;
 };
 
 class DataSource : public AbstractDataSource {
@@ -52,16 +49,20 @@ public:
     std::map<std::string, std::shared_ptr<data::basic::Bar>> bar_reader;
     std::map<std::string, std::string> path_dict;
 
-    BAR_MULTI consumed_data;
+    // TODO consider using struct to short define
+    std::map<std::string,
+             std::map<int, std::tuple<double, double, double, double, double, double>>>
+        consumed_data;
 
     DataSource() = default;
     DataSource(std::map<std::string, std::string> path_map, int bar_count);
 
 public:
-    BAR history_bars(std::string instrument_id, int bar_count, int end_dt);
-    BAR_MULTI multi_history_bars(std::vector<std::string> instrument_ids,
-                                 int bar_count,
-                                 int end_dt);
+    std::map<int, std::tuple<double, double, double, double, double, double>> history_bars(
+        std::string instrument_id, int bar_count, int end_dt);
+    std::map<std::string,
+             std::map<int, std::tuple<double, double, double, double, double, double>>>
+    multi_history_bars(std::vector<std::string> instrument_ids, int bar_count, int end_dt);
 
     // get previous date close price
     double get_previous_price(std::string instrument_id, int dt);
@@ -76,6 +77,10 @@ public:
     int get_next_trading_date(int end_dt, int bar_count = 1);
 
     // back test only
-    BAR_MULTI step();
-    BAR_MULTI reset();
+    std::map<std::string,
+             std::map<int, std::tuple<double, double, double, double, double, double>>>
+    step();
+    std::map<std::string,
+             std::map<int, std::tuple<double, double, double, double, double, double>>>
+    reset();
 };

@@ -77,6 +77,7 @@ double Analyzer::rl_unit_net_value() {
 
 // clang-format off
 std::vector<double> Analyzer::bar_returns() {
+    /// debug message
     std::cout << "bar returns is: [";
     for (const auto& val : __portfolio_current_bar_returns) {
         std::cout << val << ", ";

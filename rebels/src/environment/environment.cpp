@@ -47,17 +47,24 @@ TradingEnvironment::TradingEnvironment(std::shared_ptr<DataSource> datasource,
     }
 }
 
-DataSource::BAR_MULTI TradingEnvironment::reset() {
+std::map<std::string, std::map<int, std::tuple<double, double, double, double, double, double>>>
+TradingEnvironment::reset() {
     // reload csv stream to the beginning
     return Context::Instance().data_source_ptr->reset();
 }
 
-std::tuple<DataSource::BAR_MULTI, double, bool, std::map<std::string, double>> TradingEnvironment::step(
-    std::vector<Order>& action) {
+std::tuple<std::map<std::string,
+                    std::map<int, std::tuple<double, double, double, double, double, double>>>,
+           double,
+           bool,
+           std::map<std::string, double>>
+TradingEnvironment::step(std::vector<Order>& action) {
     double reward;
     std::map<std::string, double> info;
 
-    DataSource::BAR_MULTI next_state = Context::Instance().data_source_ptr->step();
+    std::map<std::string,
+             std::map<int, std::tuple<double, double, double, double, double, double>>>
+        next_state         = Context::Instance().data_source_ptr->step();
     std::tie(reward, info) = Context::Instance().executor_ptr->send(action);
 
     return {next_state, reward, false, info};

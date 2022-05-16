@@ -18,8 +18,6 @@ private:
     std::map<std::string, double> __starting_cash;
 
 public:
-    // TradingEnvironment();
-
     TradingEnvironment(std::shared_ptr<DataSource> datasource,
                        int32_t look_backward_window                = 1,
                        std::map<std::string, double> starting_cash = {{"STOCK", 1000000.0}},
@@ -28,7 +26,14 @@ public:
                        int32_t min_commission                      = 5,
                        int32_t tax_multiplier                      = 1);
 
-    DataSource::BAR_MULTI reset();
-    std::tuple<DataSource::BAR_MULTI, double, bool, std::map<std::string, double>> step(
-        std::vector<Order>& action);
+    std::map<std::string,
+             std::map<int, std::tuple<double, double, double, double, double, double>>>
+    reset();
+
+    std::tuple<std::map<std::string,
+                        std::map<int, std::tuple<double, double, double, double, double, double>>>,
+               double,
+               bool,
+               std::map<std::string, double>>
+    step(std::vector<Order>& action);
 };

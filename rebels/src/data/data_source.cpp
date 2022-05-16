@@ -24,9 +24,10 @@ DataSource::DataSource(std::map<std::string, std::string> path_map, int bar_coun
 }
 
 // simple version for back test
-DataSource::BAR DataSource::history_bars(std::string instrument_id, int bar_counts, int end_dt) {
+std::map<int, std::tuple<double, double, double, double, double, double>> DataSource::history_bars(
+    std::string instrument_id, int bar_counts, int end_dt) {
     // trading data
-    BAR bar;
+    std::map<int, std::tuple<double, double, double, double, double, double>> bar;
 
     auto bar_it = consumed_data.find(instrument_id);
 
@@ -48,10 +49,13 @@ DataSource::BAR DataSource::history_bars(std::string instrument_id, int bar_coun
     return bar;
 }
 
-DataSource::BAR_MULTI DataSource::multi_history_bars(std::vector<std::string> instrument_ids,
-                                                     int bar_count,
-                                                     int end_dt) {
-    BAR_MULTI bars;
+std::map<std::string, std::map<int, std::tuple<double, double, double, double, double, double>>>
+DataSource::multi_history_bars(std::vector<std::string> instrument_ids,
+                               int bar_count,
+                               int end_dt) {
+    std::map<std::string,
+             std::map<int, std::tuple<double, double, double, double, double, double>>>
+        bars;
 
     for (std::string& instrument_id : instrument_ids) {
         bars[instrument_id] = history_bars(instrument_id, bar_count, end_dt);
@@ -60,8 +64,11 @@ DataSource::BAR_MULTI DataSource::multi_history_bars(std::vector<std::string> in
     return bars;
 }
 
-DataSource::BAR_MULTI DataSource::step() {
-    BAR_MULTI bar;
+std::map<std::string, std::map<int, std::tuple<double, double, double, double, double, double>>>
+DataSource::step() {
+    std::map<std::string,
+             std::map<int, std::tuple<double, double, double, double, double, double>>>
+        bar;
     int current_dt;
     data::BarRecord bar_rec;
     std::string instrument_id;
@@ -84,7 +91,8 @@ DataSource::BAR_MULTI DataSource::step() {
     return bar;
 }
 
-DataSource::BAR_MULTI DataSource::reset() {
+std::map<std::string, std::map<int, std::tuple<double, double, double, double, double, double>>>
+DataSource::reset() {
     for (auto& reader_item : bar_reader) {
         reader_item.second->LoadCSV(path_dict.at(reader_item.first));
     }

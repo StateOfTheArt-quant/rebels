@@ -122,7 +122,7 @@ int main(int argc, char* argv[]) {
     single_target_reward();
     std::cout << "*********************************multi********************************"
               << std::endl;
-    // multi_targets_reward();
+    multi_targets_reward();
 
     return 0;
 }
