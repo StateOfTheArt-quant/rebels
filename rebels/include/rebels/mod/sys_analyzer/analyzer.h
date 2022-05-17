@@ -34,4 +34,7 @@ public:
 
     double rl_static_unit_net_value();
     double rl_unit_net_value();
+
+    // get next day total value
+    double get_next_total_value();
 };

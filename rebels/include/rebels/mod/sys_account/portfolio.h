@@ -37,4 +37,5 @@ public:
 
 public:
     double units();
+    std::map<std::string, std::shared_ptr<Account>> account_container() const;
 };

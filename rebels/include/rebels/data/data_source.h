@@ -58,8 +58,30 @@ public:
     DataSource(std::map<std::string, std::string> path_map, int bar_count);
 
 public:
+
+    /**
+     * @brief get single history trading data from cache, use step first
+     * 
+     * @param instrument_id instrument id string, like "000001.XSHE"
+     * @param bar_count previous trading days, like 5
+     * @param end_dt end of trading dates, like 20200101
+     * @return std::map<int, std::tuple<double, double, double, double, double, double>>,
+     *         like {"trading date": (trading data...)}
+     */
     std::map<int, std::tuple<double, double, double, double, double, double>> history_bars(
         std::string instrument_id, int bar_count, int end_dt);
+
+    /**
+     * @brief get multi history trading data from cache, use step first
+     * 
+     * @param instrument_ids instruments id string, like {"000001.XSHE", "000002.XSHE"}
+     * @param bar_count previous trading days, like 5
+     * @param end_dt end of trading dates, like 20200101
+     * @return std::map<std::string,
+     *         std::map<int, std::tuple<double, double, double, double, double, double>>>,
+     *         like {"instrument1": {"trading date": (trading data...)}, 
+     *               "instrument2": {"trading date": (trading data...)}}
+     */
     std::map<std::string,
              std::map<int, std::tuple<double, double, double, double, double, double>>>
     multi_history_bars(std::vector<std::string> instrument_ids, int bar_count, int end_dt);

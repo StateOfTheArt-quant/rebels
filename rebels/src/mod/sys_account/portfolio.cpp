@@ -1,6 +1,7 @@
 #include <cmath>
-#include <iostream>
+// #include <iostream>
 
+#include "rebels/utilities/output.h"
 #include "rebels/mod/sys_account/portfolio.h"
 
 Portfolio::Portfolio() {}
@@ -10,11 +11,11 @@ Portfolio::Portfolio(std::map<std::string, double> starting_cash,
     : __listener{event_bus} {
 
     for (auto it = starting_cash.begin(); it != starting_cash.end(); it++) {
-        std::cout << "[Portfolio]: init crash triggered, " << it->first << " " << it->second << std::endl;
+        /// debug
+        DEBUG_MSG("Portfolio", "user {}, init crash {}.", it->first, it->second);
+
         std::shared_ptr<Account> account_ptr
             = std::make_shared<Account>(it->first, it->second, event_bus);
-        std::cout << "create " << it->first
-                  << " account, total value is: " << account_ptr->total_value() << std::endl;
         __account_container.emplace(it->first, account_ptr);
         __units += it->second;
     }
@@ -35,8 +36,12 @@ void Portfolio::__pre_before_trading(PreBeforeTradingEvent event) {
     } else {
         __static_unit_net_value = _last_unit_net_value;
     }
-    std::cout << "[Portfolio]: __pre_before_trading called, __static_unit_net_value value is "
-              << __static_unit_net_value << ", __units is " << __units << std::endl;
+
+    /// debug
+    DEBUG_MSG("Portfolio",
+              "__pre_before_trading, static_unit_net_value {}, units {}.",
+              __static_unit_net_value,
+              __units);
 }
 
 void Portfolio::__post_settlement(PostSettlementEvent event) {
@@ -57,13 +62,10 @@ double Portfolio::unit_net_value() {
 }
 
 double Portfolio::bar_returns() {
-    std::cout << "----------------------*bar returns triggered." << std::endl;
     return unit_net_value() / __static_unit_net_value - 1.0;
 }
 
 double Portfolio::total_returns() {
-    std::cout << "----------------------*total_returns triggered." << std::endl;
-
     return unit_net_value() - 1.0;
 }
 
@@ -94,3 +96,7 @@ double Portfolio::daily_pnl() {
 }
 
 double Portfolio::units() { return __units; }
+
+std::map<std::string, std::shared_ptr<Account>> Portfolio::account_container() const {
+    return __account_container;
+}

@@ -1,21 +1,17 @@
 #include "rebels/mod/sys_account/account.h"
 #include "rebels/object/events.h"
 #include "rebels/core/context.h"
-#include <iostream>
+#include "rebels/utilities/output.h"
 
-Account::Account(){
-}
+Account::Account() {}
 
-Account::Account(std::string account_type, double total_cash, std::shared_ptr<EventBus> event_bus):
-    account_type(account_type),
-    __total_cash(total_cash),
-    __listener{event_bus}{
-    std::cout << "creating a account ..." << std::endl;
+Account::Account(std::string account_type, double total_cash, std::shared_ptr<EventBus> event_bus)
+    : account_type(account_type), __total_cash(total_cash), __listener{event_bus} {
     register_event();
 }
 
 void Account::register_event() {
-    std::cout << "Account::register_event ..." << std::endl;
+    DEBUG_MSG("Account", "register_event ...");
     __listener.listen<TradeEvent>(std::bind(&Account::__apply_trade, this, std::placeholders::_1));
 
     __listener.listen<OrderPendingNewEvent>(std::bind(&Account::__on_order_pending_new, this, std::placeholders::_1));
@@ -30,7 +26,7 @@ void Account::register_event() {
 }
 
 void Account::__apply_trade(TradeEvent event) {
-    std::cout << "call Account::__apply_trade" << std::endl;
+    DEBUG_MSG("Account", "__apply_trade ...");
 
     Order& order = event.order;
     Trade& trade = event.trade;
@@ -48,11 +44,11 @@ void Account::__apply_trade(TradeEvent event) {
     }
 
     if (trade.position_effect() == PositionEffect::MATCH){
-        std::cout << "call trade.position_effect() == PositionEffect::MATCH" << std::endl;
+        DEBUG_MSG("Account", "call trade.position_effect() == PositionEffect::MATCH");
         double delta_cash = __get_or_create_position(instrument_id, PositionDirection::LONG) -> apply_trade(trade) + __get_or_create_position(instrument_id, PositionDirection::SHORT) -> apply_trade(trade);
         __total_cash += delta_cash;
     } else {
-        std::cout << "call trade.position_effect() != PositionEffect::MATCH" << std::endl;
+        DEBUG_MSG("Account", "call trade.position_effect() != PositionEffect::MATCH");
         double delta_cash = __get_or_create_position(instrument_id, trade.position_direction()) -> apply_trade(trade);
         __total_cash += delta_cash;
     }
@@ -60,17 +56,17 @@ void Account::__apply_trade(TradeEvent event) {
 }
 
 void Account::__on_order_pending_new(OrderPendingNewEvent event) {
-    std::cout << "call Account::__on_order_pending_new" << std::endl;
+    DEBUG_MSG("Account", "call Account::__on_order_pending_new");
     Order& order = event.order;
     double cost = __frozen_cash_of_order(order);
     order.set_frozen_cash(cost);
-    std::cout << "local variable order frozen_cash() : "<< order.frozen_cash() << std::endl;
+    DEBUG_MSG("Account", "local variable order frozen_cash(): ", order.frozen_cash());
     __frozen_cash += order.frozen_cash();
 }
 
 template<typename T>
 void Account::__on_order_unsolicited_update(T event) {
-    std::cout << "call Account::__on_order_unsolicited_update" << std::endl;
+    DEBUG_MSG("Account", "call Account::__on_order_unsolicited_update");
     Order& order = event.order;
     if (order.filled_quantity() == 0){
         __frozen_cash -= order.frozen_cash();
@@ -81,7 +77,7 @@ void Account::__on_order_unsolicited_update(T event) {
 
 template<typename T>
 void Account::__on_before_trading(T event) {
-    std::cout << "call Account::__on_before_trading" << std::endl;
+    DEBUG_MSG("Account", "call Account::__on_before_trading");
 
     //todo
     int trading_dt = 20220101;
@@ -94,7 +90,7 @@ void Account::__on_before_trading(T event) {
 }
 
 void Account::__on_settlement(SettlementEvent event) {
-    std::cout << "call Account::__on_settlement" << std::endl;
+    DEBUG_MSG("Account", "call Account::__on_settlement");
 
     int trading_dt = 20220101;
     //step1: on_settlement
@@ -118,7 +114,7 @@ void Account::__on_settlement(SettlementEvent event) {
 
 template<typename T>
 void Account::__update_last_price(T event) {
-    std::cout << "[Account]: call Account::__update_last_price..." << std::endl;
+    DEBUG_MSG("Account", "call Account::__update_last_price");
     
     // get context instance
     Context& ctx = Context::Instance();
@@ -126,11 +122,11 @@ void Account::__update_last_price(T event) {
     for (auto it = __positions.begin(); it != __positions.end(); it++) {
         double price = ctx.data_source_ptr->get_current_price(it->first, ctx.trading_dt);
 
-        std::cout << "--------------------------------------------" << std::endl;
-        std::cout << "account update latest price date: " << ctx.trading_dt << std::endl;
-        std::cout << "account update latest price instrument: " << it->first << std::endl;
-        std::cout << "account update latest price: " << price << std::endl;
-        std::cout << "--------------------------------------------" << std::endl;
+        DEBUG_MSG("Account",
+                  "current instrument {}, trading date {}, price {}.",
+                  it->first,
+                  ctx.trading_dt,
+                  price);
 
         for (auto iit = it->second.begin(); iit != it->second.end(); iit++) {
             iit->second->update_last_price(price);
@@ -187,8 +183,11 @@ double Account::__frozen_cash_of_order(Order& order) {
     double cost = 0.0;
     if (order.position_effect() == PositionEffect::OPEN) {
         cost = double(order.quantity()) * order.frozen_price();
-        std::cout << "[Account]: order quantity " << order.quantity() << ",order frozen_price "
-                  << order.frozen_price() << ", frozen cash " << cost << std::endl;
+        DEBUG_MSG("Account",
+                  "order quantity {}, order frozen_price {}, frozen cash {}",
+                  order.quantity(),
+                  order.frozen_price(),
+                  cost);
     }
     return cost;
 }

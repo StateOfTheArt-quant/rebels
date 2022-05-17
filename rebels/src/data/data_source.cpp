@@ -1,5 +1,6 @@
 #include "rebels/data/data_source.h"
-#include <iostream>
+// #include <iostream>
+#include "rebels/utilities/output.h"
 #include <vector>
 #include <algorithm>
 
@@ -19,7 +20,7 @@ DataSource::DataSource(std::map<std::string, std::string> path_map, int bar_coun
     // mapping dict for instrument id and streamer ptr
     for (auto& path_item : path_map) {
         bar_reader[path_item.first] = std::make_shared<data::basic::Bar>(path_item.second);
-        std::cout << "load " << path_item.first << " from " << path_item.second << std::endl;
+        DEBUG_MSG("DataSource", "load {} from {}.", path_item.first, path_item.second);
     }
 }
 
@@ -84,8 +85,8 @@ DataSource::step() {
         consumed_data[instrument_id][current_dt] = bar_rec.bar;
 
         bar[instrument_id] = history_bars(instrument_id, __bar_count, current_dt);
-
-        std::cout << instrument_id << " current date is " << current_dt << std::endl;
+        DEBUG_MSG(
+            "DataSource", "insturment is {}, current date is {}.", instrument_id, current_dt);
     }
 
     return bar;
@@ -101,7 +102,7 @@ DataSource::reset() {
     decltype(consumed_data) empty;
     consumed_data.swap(empty);
 
-    std::cout << "DataSource and consumed_data reset" << std::endl;
+    DEBUG_MSG("DataSource", "DataSource and consumed_data reset");
 
     // get first date then clear
     auto first_data = step();
@@ -127,14 +128,15 @@ double DataSource::get_previous_price(std::string instrument_id, int dt) {
     data::BarRecord bar_last = it->second->record_last;
 
     // only if last date is not existed in raw data source
-    if (bar_last.date != dt) {
-        return 0.0;
-    }
+    // if (bar_last.date != dt) {
+    //     return 0.0;
+    // }
 
-    // debug
-    int last_date = bar_last.date;  // TODO remove
-    std::cout << "last date is " << last_date << ", close price is " << std::get<3>(bar_last.bar)
-              << std::endl;
+    /// debug
+    DEBUG_MSG("DataSource",
+              "previous date is {}, close price is {}.",
+              bar_last.date,
+              std::get<3>(bar_last.bar));
 
     // last day close price
     return std::get<3>(bar_last.bar);
@@ -150,14 +152,16 @@ double DataSource::get_current_price(std::string instrument_id, int dt) {
     // instrument_id is not used yet
     data::BarRecord bar_curr = it->second->record_curr;
 
-    // debug
-    int last_date = bar_curr.date;  // TODO remove
-    std::cout << "[DataSouce]: get_current_price current date is " << last_date << std::endl;
-
     // only if last date is not existed in raw data source
-    if (bar_curr.date != dt) {
-        return 0.0;
-    }
+    // if (bar_curr.date != dt) {
+    //     return 0.0;
+    // }
+
+    /// debug
+    DEBUG_MSG("DataSource",
+              "current date is {}, close price is {}.",
+              bar_curr.date,
+              std::get<3>(bar_curr.bar));
 
     // last day close price
     return std::get<3>(bar_curr.bar);
@@ -173,14 +177,16 @@ double DataSource::get_next_price(std::string instrument_id, int dt) {
     // instrument_id is not used yet
     data::BarRecord bar_next = it->second->record_next;
 
-    // only if last date is not existed in raw data source
-    if (bar_next.date != dt) {
-        return 0.0;
-    }
+    /// only if last date is not existed in raw data source
+    // if (bar_next.date != dt) {
+    //     return 0.0;
+    // }
 
     // debug
-    std::cout << "next date is " << bar_next.date << ", close price is "
-              << std::get<3>(bar_next.bar) << std::endl;
+    DEBUG_MSG("DataSource",
+              "next date is {}, close price is {}.",
+              bar_next.date,
+              std::get<3>(bar_next.bar));
 
     // last day close price
     return std::get<3>(bar_next.bar);
