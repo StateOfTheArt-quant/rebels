@@ -6,6 +6,7 @@
 enum class EventType{
     POST_SYSTEM_INIT,
     BEFORE_TRADING,
+    PREBAR,
     BAR,
     AFTER_TRADING,
     ORDER_PENDING_NEW,
@@ -16,7 +17,9 @@ enum class EventType{
     ORDER_CANCEL_REJECT,
     ORDER_UNSOLICITED_UPDATE, // order_status_change
     TRADE,
-    SETTLEMENT
+    SETTLEMENT,
+    PREBEFORETRADING,
+    POSTSETTLEMENT
 };
 
 class Event{
@@ -24,11 +27,13 @@ public:
     EventType event_type;
     Event(EventType event_type);
 };
+
 // --------------------
 class PostSystemInitEvent : public Event {
 public:
     PostSystemInitEvent(EventType event_type);
 };
+
 //----------------
 class PreBeforeTradingEvent : public Event {
 public:

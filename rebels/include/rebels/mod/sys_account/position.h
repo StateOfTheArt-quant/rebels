@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <string>
+#include <cmath>
 #include "rebels/const.h"
 #include "rebels/object/trade.h"
 
@@ -18,7 +19,7 @@ private:
     double __transaction_cost;
 
     double __prev_close;
-    double __last_price;
+    double __last_price{INFINITY};
 
     PositionDirection __position_direction;
     int __direction_factor;

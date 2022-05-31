@@ -15,9 +15,10 @@ private:
     std::int64_t __insert_time;
     std::string __instrument_id;
 
-    double __frozen_price;
-    std::int64_t __quantity;
-    std::int64_t __filled_quantity;
+    /// attention: init parameter with default values otherwise error will occur
+    double __frozen_price{0.0};
+    std::int64_t __quantity{0};
+    std::int64_t __filled_quantity{0};
 
     double __frozen_cash;
 

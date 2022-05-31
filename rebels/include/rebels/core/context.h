@@ -7,15 +7,12 @@
 #include "rebels/mod/sys_analyzer/analyzer.h"
 #include "rebels/core/strategy.h"
 #include "rebels/core/executor.h"
+#include "rebels/eventbus.h"
 
-#include <dexode/EventBus.hpp>
 #include <memory>
 
-using EventBus = dexode::EventBus;
-using Listener = dexode::EventBus::Listener;
-
 //Context is a singleton
-class Context{
+class Context {
 public:
     static Context& Instance(){
         static std::unique_ptr<Context> instance_ptr(new Context()); //static local variable only exec once
@@ -34,6 +31,7 @@ private:
 //---- for singleton
 public:
     int trading_dt{0};
+    std::string mode{"rl"};
     std::shared_ptr<DataSource> data_source_ptr;
     std::shared_ptr<Account> account_ptr;
     std::shared_ptr<Portfolio> portfolio_ptr;
@@ -51,5 +49,5 @@ public:
     void set_analyzer(std::shared_ptr<Analyzer> analyzer_ptr);
     void set_strategy(std::shared_ptr<Strategy> strategy_ptr);
     void set_executor(std::shared_ptr<Executor> executor_ptr);
-
+    void set_mode(std::string mode_str);
 };

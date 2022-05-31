@@ -78,7 +78,7 @@ void SimulationBroker::submit_order(std::unique_ptr<Order> order_ptr){
     // step 1: publish ORDER_PENDING_NEW event
 
     std::cout << "publish OrderPendingNewEvent... " << std::endl;
-    std::cout << "order instrument_id: " << order_ptr->instrument_id() << "quantity: " <<  order_ptr->quantity() << std::endl;
+    std::cout << "order instrument_id: " << order_ptr->instrument_id() << " quantity: " <<  order_ptr->quantity() << std::endl;
     __event_bus->postpone(OrderPendingNewEvent(EventType::ORDER_PENDING_NEW, *order_ptr)); //pass-by-reference
     __event_bus->process();
 
