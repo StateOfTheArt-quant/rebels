@@ -4,10 +4,12 @@
 #include "rebels/eventbus.h"
 
 class DefaultMatcher {
-public:
+private:
     std::shared_ptr<EventBus> __event_bus;
 
+public:
     DefaultMatcher();
     DefaultMatcher(std::shared_ptr<EventBus> event_bus);
+
     void match(Order& order);
 };

@@ -9,7 +9,6 @@ class Trade {
 private:
     static std::uint64_t __id_counter;
 
-
 private:
     std::int64_t __trade_id;
     std::int64_t __order_id;

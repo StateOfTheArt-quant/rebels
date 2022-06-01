@@ -28,10 +28,12 @@ public:
 
 private:
     Context() = default;
+
 //---- for singleton
 public:
     int trading_dt{0};
     std::string mode{"rl"};
+    // std::map<std::string, 
     std::shared_ptr<DataSource> data_source_ptr;
     std::shared_ptr<Account> account_ptr;
     std::shared_ptr<Portfolio> portfolio_ptr;

@@ -11,20 +11,20 @@
 class TradingEnvironment {
 private:
     std::string __mode;
-    int32_t __min_commission;
-    int32_t __tax_multiplier;
-    int32_t __look_backward_window;
-    int32_t __commission_multiplier;
+    double __min_commission;
+    double __tax_multiplier;
+    int __look_backward_window;
+    double __commission_multiplier;
     std::map<std::string, double> __starting_cash;
 
 public:
     TradingEnvironment(std::shared_ptr<DataSource> datasource,
-                       int32_t look_backward_window                = 1,
+                       int look_backward_window                    = 1,
                        std::map<std::string, double> starting_cash = {{"STOCK", 1000000.0}},
                        std::string mode                            = "non-rl",
-                       int32_t commission_multiplier               = 1,
-                       int32_t min_commission                      = 5,
-                       int32_t tax_multiplier                      = 1);
+                       double commission_multiplier                = 1.0,
+                       double min_commission                       = 5.0,
+                       double tax_multiplier                       = 1.0);
 
     std::map<std::string,
              std::map<int, std::tuple<double, double, double, double, double, double>>>
@@ -36,4 +36,7 @@ public:
                bool,
                std::map<std::string, double>>
     step(std::vector<Order>& action);
+
+    /// basic property
+    int trading_dt();
 };
