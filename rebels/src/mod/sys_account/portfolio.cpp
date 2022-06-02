@@ -9,7 +9,6 @@ Portfolio::Portfolio() {}
 Portfolio::Portfolio(std::map<std::string, double> starting_cash,
                      std::shared_ptr<EventBus> event_bus)
     : __listener{event_bus} {
-
     for (auto it = starting_cash.begin(); it != starting_cash.end(); it++) {
         /// debug
         DEBUG_MSG("Portfolio", "user {}, init crash {}.", it->first, it->second);
@@ -25,12 +24,13 @@ Portfolio::Portfolio(std::map<std::string, double> starting_cash,
     __listener.listen<PostSettlementEvent>(
         std::bind(&Portfolio::__post_settlement, this, std::placeholders::_1));
 
-    // std::cout << "[Portfolio]: init portfolio total value: " << this->total_value() << std::endl;
+    // std::cout << "[Portfolio]: init portfolio total value: " << this->total_value() <<
+    // std::endl;
 }
 
 void Portfolio::__pre_before_trading(PreBeforeTradingEvent event) {
     double unit_net_value_ = unit_net_value();
-    
+
     if (unit_net_value_ != INFINITY) {
         __static_unit_net_value = unit_net_value_;
     } else {
@@ -57,17 +57,11 @@ double Portfolio::total_value() {
     return total_values;
 }
 
-double Portfolio::unit_net_value() {
-    return total_value() / __units;
-}
+double Portfolio::unit_net_value() { return total_value() / __units; }
 
-double Portfolio::bar_returns() {
-    return unit_net_value() / __static_unit_net_value - 1.0;
-}
+double Portfolio::bar_returns() { return unit_net_value() / __static_unit_net_value - 1.0; }
 
-double Portfolio::total_returns() {
-    return unit_net_value() - 1.0;
-}
+double Portfolio::total_returns() { return unit_net_value() - 1.0; }
 
 double Portfolio::daily_returns() {
     if (__static_unit_net_value == 0) {
@@ -77,9 +71,9 @@ double Portfolio::daily_returns() {
         double ret = unit_net_value() / __static_unit_net_value - 1.0;
 
         // double precision might return digital smaller than 1e-8
-        if (ret < 1e-8) {
-            return 0.0;
-        }
+        // if (ret < 1e-8) {
+        //     return 0.0;
+        // }
 
         return ret;
     }

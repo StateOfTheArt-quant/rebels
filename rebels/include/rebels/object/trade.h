@@ -5,7 +5,6 @@
 #include "rebels/const.h"
 
 class Trade {
-
 private:
     static std::uint64_t __id_counter;
 
@@ -27,11 +26,20 @@ private:
 
     double __tax{0.0};
     double __commission{0.0};
-    double __transaction_cost{0.0};
+    // unused variable in this frame
+    // double __transaction_cost{0.0};
 
 public:
-    Trade(std::string instrument_id, double price, std::int64_t quantity, Side side, PositionEffect position_effect,
-          double tax=0.0, double commission=0.0, double frozen_price=0.0,  std::int64_t trade_time=20000, std::int64_t close_today_amount=0);
+    Trade(std::string instrument_id,
+          double price,
+          std::int64_t quantity,
+          Side side,
+          PositionEffect position_effect,
+        //   double tax                      = 0.0,
+        //   double commission               = 0.0,
+          double frozen_price             = 0.0,
+          std::int64_t trade_time         = 20000,
+          std::int64_t close_today_amount = 0);
 
     std::int64_t trade_id() const;
     std::int64_t order_id() const;
@@ -48,8 +56,12 @@ public:
     PositionDirection position_direction() const;
     PositionEffect position_effect() const;
 
+    // init tax and commission is always zero if using this frame logic, 
+    // so expose custome setting to these two variables
+    void set_tax(double tax);
+    void set_commission(double commission);
+
     double tax() const;
     double commission() const;
     double transaction_cost() const;
-
 };

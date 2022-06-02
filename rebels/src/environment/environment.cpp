@@ -44,6 +44,13 @@ TradingEnvironment::TradingEnvironment(std::shared_ptr<DataSource> datasource,
         // executor
         auto executor_ptr = std::make_shared<Executor>(event_bus);
         context.set_executor(executor_ptr);
+
+        // transaction cost decider
+        auto decider_ptr = std::make_shared<CNStockTransactionCostDecider>(
+            /*commission_multiplier =*/__commission_multiplier,
+            /*min_commission=*/__min_commission,
+            /*tax_multiplier=*/__tax_multiplier);
+        context.set_transaction_cost_decider("CS", decider_ptr);
     }
 }
 

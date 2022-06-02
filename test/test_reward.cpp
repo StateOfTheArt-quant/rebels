@@ -12,8 +12,6 @@
 #include "rebels/utilities/output.h"
 #include "rebels/environment/environment.h"
 
-// using namespace std;
-
 /**
  * 计算收益模式:    non-rl
  * 单账户资金  :    30000元

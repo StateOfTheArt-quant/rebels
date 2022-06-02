@@ -28,8 +28,12 @@ double StockTransactionCostDecider::get_trade_commission(Trade& trade) {
     // find instrument id from map
     std::string instrument_id = trade.instrument_id();
     auto iter                 = __commission_map.find(instrument_id);
+
+    // check commission is existed otherwise insert a new commission
     if (iter != __commission_map.end()) {
         commission = iter->second;
+    } else {
+        __commission_map[instrument_id] = commission;
     }
 
     // compare
@@ -61,6 +65,8 @@ CNStockTransactionCostDecider::CNStockTransactionCostDecider(double commission_m
       StockTransactionCostDecider(/*commission_rate=*/0.0005,
                                   /*commission_multiplier=*/commission_multiplier,
                                   /*min_commission=*/min_commission) {}
+
+CNStockTransactionCostDecider::~CNStockTransactionCostDecider() {}
 
 double CNStockTransactionCostDecider::get_tax(std::string instrument_id,
                                               Side side,
