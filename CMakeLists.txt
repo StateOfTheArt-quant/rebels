@@ -29,9 +29,9 @@ else()
 endif()
 
 # download third package
+download_fmt()
 download_spdlog()
 download_eventbus()
-download_fmt()
 
 # --------------------------------
 # custom library

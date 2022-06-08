@@ -25,11 +25,12 @@ add_library(${PROJECT_NAME} STATIC
         src/mod/sys_account/position.cpp
         src/mod/sys_account/account.cpp
         src/mod/sys_account/portfolio.cpp
+        src/mod/sys_analyzer/analyzer.cpp
         src/mod/sys_simulation/matcher.cpp
         src/mod/sys_simulation/simulation_broker.cpp
-        src/mod/sys_analyzer/analyzer.cpp
+        src/mod/sys_transaction_cost/decider.cpp
         src/environment/environment.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include)
-target_link_libraries(${PROJECT_NAME} spdlog::spdlog Dexode::EventBus fmt)
+target_link_libraries(${PROJECT_NAME} fmt::fmt spdlog::spdlog Dexode::EventBus)

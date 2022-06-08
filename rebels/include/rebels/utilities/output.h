@@ -14,7 +14,7 @@
 #include <fmt/chrono.h>
 
 // marco to controll debug message
-#define ENABLE_DEBUG 1
+#define ENABLE_DEBUG true
 
 /// format message with given tag and message
 #define FORMAT_MSG(tag, msg) "[" + std::string(tag) + "]: " + std::string(msg) + "\n"

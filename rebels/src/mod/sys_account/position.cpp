@@ -65,7 +65,7 @@ double Position::apply_trade(const Trade& trade) {
     __transaction_cost = trade.transaction_cost();
 
     /// debug
-    PRINT_MSG("[Position]: transaction cost: {}, ", __transaction_cost);
+    PRINT_MSG("[Position]: ***transaction cost: {}, ", __transaction_cost);
 
     if (trade.position_effect() == PositionEffect::OPEN) {
         if (quantity() < 0) {
@@ -76,14 +76,12 @@ double Position::apply_trade(const Trade& trade) {
             }
         } else {
             double cost = quantity() * __avg_price + trade.last_quantity() * trade.last_price();
-            /// debug
-            PRINT_MSG("cost {}, ", cost);
 
             __avg_price = cost / (quantity() + trade.last_quantity());
         }
 
         /// debug
-        PRINT_MSG("__avg_price {}\n", __avg_price);
+        PRINT_MSG("***__avg_price {}\n", __avg_price);
 
         __today_quantity += trade.last_quantity();
         __trade_cost += trade.last_price() * trade.last_quantity();

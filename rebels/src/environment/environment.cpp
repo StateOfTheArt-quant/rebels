@@ -1,12 +1,12 @@
 #include "rebels/environment/environment.h"
 
 TradingEnvironment::TradingEnvironment(std::shared_ptr<DataSource> datasource,
-                                       int32_t look_backward_window,
+                                       int look_backward_window,
                                        std::map<std::string, double> starting_cash,
                                        std::string mode,
-                                       int32_t commission_multiplier,
-                                       int32_t min_commission,
-                                       int32_t tax_multiplier)
+                                       double commission_multiplier,
+                                       double min_commission,
+                                       double tax_multiplier)
     : __look_backward_window(look_backward_window),
       __mode(std::move(mode)),
       __starting_cash(std::move(starting_cash)),
@@ -44,6 +44,13 @@ TradingEnvironment::TradingEnvironment(std::shared_ptr<DataSource> datasource,
         // executor
         auto executor_ptr = std::make_shared<Executor>(event_bus);
         context.set_executor(executor_ptr);
+
+        // transaction cost decider
+        auto decider_ptr = std::make_shared<CNStockTransactionCostDecider>(
+            /*commission_multiplier =*/__commission_multiplier,
+            /*min_commission=*/__min_commission,
+            /*tax_multiplier=*/__tax_multiplier);
+        context.set_transaction_cost_decider("CS", decider_ptr);
     }
 }
 
@@ -69,3 +76,6 @@ TradingEnvironment::step(std::vector<Order>& action) {
 
     return {next_state, reward, false, info};
 }
+
+/// property
+int TradingEnvironment::trading_dt() { return Context::Instance().trading_dt; }
