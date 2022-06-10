@@ -1,7 +1,7 @@
 #pragma once
 
 #include "rebels/object/order.h"
-#include "rebels/eventbus.h"
+#include "rebels/common/eventbus.h"
 
 #include <vector>
 #include <memory>

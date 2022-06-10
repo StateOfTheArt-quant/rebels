@@ -7,7 +7,7 @@
 #include "rebels/mod/sys_account/position.h"
 #include "rebels/object/events.h"
 #include "rebels/const.h"
-#include "rebels/eventbus.h"
+#include "rebels/common/eventbus.h"
 
 class Account {
 private:

@@ -7,7 +7,7 @@
 #include "rebels/mod/sys_account/portfolio.h"
 #include "rebels/object/events.h"
 #include "rebels/const.h"
-#include "rebels/eventbus.h"
+#include "rebels/common/eventbus.h"
 
 class Analyzer {
 private:

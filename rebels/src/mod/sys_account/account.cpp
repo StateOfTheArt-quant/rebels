@@ -36,7 +36,7 @@ void Account::__apply_trade(TradeEvent event) {
         //std::cout << "call trade.position_effect() != PositionEffect::MATCH" << std::endl;
         if (trade.last_quantity() != order.quantity()){
             double delta_frozen_cash = order.frozen_cash() * trade.last_quantity() / order.quantity();
-            std::cout << "delta frozen cash: " << delta_frozen_cash << std::endl;
+            DEBUG_MSG("Account", "delta frozen cash {}", delta_frozen_cash);
             __frozen_cash -= delta_frozen_cash;
         } else {
             __frozen_cash -= order.frozen_cash();

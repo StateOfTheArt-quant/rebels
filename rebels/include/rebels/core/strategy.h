@@ -1,10 +1,8 @@
 #pragma once
 
-#include <iostream>
-
-#include "rebels/eventbus.h"
 #include "rebels/object/events.h"
 #include "rebels/object/order.h"
+#include "rebels/common/eventbus.h"
 
 class Strategy {
 private:

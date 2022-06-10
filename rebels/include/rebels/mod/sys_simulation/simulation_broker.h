@@ -4,7 +4,7 @@
 #include <memory>
 #include "rebels/object/events.h"
 #include "rebels/mod/sys_simulation/matcher.h"
-#include "rebels/eventbus.h"
+#include "rebels/common/eventbus.h"
 
 class SimulationBroker {
 private:
