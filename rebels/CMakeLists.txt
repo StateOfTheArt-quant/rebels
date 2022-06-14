@@ -15,6 +15,7 @@ add_library(${PROJECT_NAME} STATIC
         src/market/order.cpp
         src/market/book.cpp
         src/utilities/accumulator.cpp
+        src/utilities/mock.cpp
         src/data/data_source.cpp
         src/object/order.cpp
         src/object/trade.cpp
