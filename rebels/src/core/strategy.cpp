@@ -1,8 +1,7 @@
 #include "rebels/core/strategy.h"
-#include <memory>
-#include <functional>
 #include "rebels/object/order.h"
 #include "rebels/core/context.h"
+#include "rebels/utilities/output.h"
 
 Strategy::Strategy(std::shared_ptr<EventBus> event_bus) : __listener{event_bus} {
     /// conflit to Portfolio
@@ -11,7 +10,7 @@ Strategy::Strategy(std::shared_ptr<EventBus> event_bus) : __listener{event_bus} 
 
 void Strategy::handle_bar(BarEvent event) {
     // debug message
-    std::cout << "[Strategy]: execute handle bar ..." << std::endl;
+    DEBUG_MSG("Strategy", "execute handle bar ...");
 
     // temporary parameter to fetch ev orders
     std::vector<Order> orders = event.orders;
@@ -31,5 +30,5 @@ void Strategy::handle_bar(BarEvent event) {
         context.broker_ptr->submit_order(std::move(order_ptr));
     }
 
-    std::cout << "[Strategy]: submit order done ..." << std::endl;
+    DEBUG_MSG("Strategy", "submit order done ...");
 }

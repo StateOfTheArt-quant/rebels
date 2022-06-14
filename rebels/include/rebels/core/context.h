@@ -8,7 +8,7 @@
 #include "rebels/mod/sys_analyzer/analyzer.h"
 #include "rebels/core/strategy.h"
 #include "rebels/core/executor.h"
-#include "rebels/eventbus.h"
+#include "rebels/common/eventbus.h"
 
 #include <memory>
 
